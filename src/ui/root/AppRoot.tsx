@@ -3,6 +3,7 @@ import { Consumer, EmptyObject } from "data/util";
 import React, { useContext } from "react";
 import { AppColors, StyleProvider } from "ui/styles";
 import { DefaultColors, ThemeColorMap } from "ui/styles/Colors";
+import { EngineService } from "./EngineService";
 
 /*
  * Root component for the app. Also acts as a provider for global states
@@ -69,7 +70,9 @@ export class AppRoot extends React.Component<AppRootProps, AppRootState> {
             setTheme: this.setTheme.bind(this),
         }}>
             <StyleProvider mapDisplayMode={this.state.mapDisplayMode} appColors={appColors}>
-                {this.props.children}
+                <EngineService>
+                    {this.props.children}
+                </EngineService>
             </StyleProvider>
         </AppRootContext.Provider>
     }

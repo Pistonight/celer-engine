@@ -27,7 +27,7 @@ export const Sizes = <const>{
     // Banner triangle size
     bannerTriangle: "10px",
     // Doc instruction size
-    instruction: "11em",
+    instruction: "12em",
     // Doc instruction icon size
     instructionIcon: "2.5em",
     

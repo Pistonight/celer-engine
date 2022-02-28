@@ -11,6 +11,7 @@ export const DocLineTextComponentStyle =({colors, sizes}: ComputeStyleInputs)=>(
         backgroundColor: colors.docLineBackgroundAlt 
     },
     lineNumber: {
+        cursor: "pointer",
         display: "inline-block",
         padding: sizes.cellPadding,  
         width: sizes.lineNumber,

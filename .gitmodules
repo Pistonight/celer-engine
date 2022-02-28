@@ -1,0 +1,3 @@
+[submodule "src/data/compile"]
+	path = src/data/compile
+	url = git@github.com:iTNTPiston/celer-compiler.git

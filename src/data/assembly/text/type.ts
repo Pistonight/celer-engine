@@ -20,6 +20,17 @@ export enum StringType {
 }
 
 export type TypedStringBlock = TypedString | TypedString[];
+export const isEmptyString = (str: TypedStringBlock): boolean =>{
+    if (Array.isArray(str)){
+        for(let i = 0; i< str.length;i++){
+            if(!isEmptyString(str[i])){
+                return false;
+            }
+        }
+        return true;
+    }
+    return str.content.length > 0;
+}
 //export type TypedStringLike = string | TypedStringBlock;
 // export const txt = (...t: TextLike[]):TextBlock => textHelper(t);
 // export const itm = (...t: TextLike[]):TextBlock => textHelper(t, "color-item");

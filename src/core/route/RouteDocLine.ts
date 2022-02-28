@@ -1,5 +1,5 @@
 import { TypedStringBlock } from "data/assembly/text/type";
-import { BannerType } from "data/assembly/types";
+import { BannerType, Movement, SplitType } from "data/assembly/types";
 
 export type DocLine = 
     DocLineSection |
@@ -28,31 +28,22 @@ export interface DocLineText {
     
     text: TypedStringBlock,
     notes?: TypedStringBlock,
+
+    movements: Movement[];
+    mapLineColor?: string;
+    
 }
 
 export interface DocLineTextWithIcon extends Omit<DocLineText, "lineType"> {
     lineType: "DocLineTextWithIcon";
 
-    coord: Coord;
+    
     splitType: SplitType;
     comment?: TypedStringBlock;
     icon: string;
     counterValue: string;
+
+    hideIconOnMap?: boolean;
 }
 
 
-
-export enum SplitType {
-    None,
-    Shrine, //1 - 120
-    Tower, //I - XV
-    Warp, // 1-??
-    Memory, // I - XIII
-    Korok, //1 - 900
-    Hinox, //1-40
-    Talus, //1-40
-    Molduga, //1-4
-    UserDefined
-}
-
-export type Coord = {x: number, y: number, z: number}

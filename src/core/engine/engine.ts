@@ -6,8 +6,9 @@ import { addKorok, getMissingKoroks, hasKorok, KorokData, newData } from "./koro
 // import { Koroks } from "./library";
 // import { EngineCommand, EngineCommands } from "./command";
 // import { InstructionPacketWithExtend } from "./creator";
-import { DocLine, SplitType } from "core/route";
-import { BannerType, RouteAssembly, RouteAssemblySection } from "../../data/assembly/types";
+import { DocLine } from "core/route";
+import { BannerType, RouteAssembly, RouteAssemblySection, SplitType } from "data/assembly/types";
+import { StringType } from "data/assembly/text/type";
 
 //Recharge time in seconds
 const GALE_RECHARGE = 360;
@@ -16,7 +17,7 @@ const GALE_PLUS_RECHARGE = 120;
 const FURY_PLUS_RECHARGE = 240;
 // Default estimate for each step is 20 seconds
 const STEP_ESTIMATE = 20;
-const MEMORY_ROMAN = ["","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"];
+const ROMAN_NUMERAL = ["","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"];
 
 const ShrineFormat = "{{KRK}} {{Text}} {{SRN}}"
 const KorokFormat = "{{Seed}} {{ID}} {{Text}}"
@@ -24,18 +25,19 @@ const KorokFormat = "{{Seed}} {{ID}} {{Text}}"
 export class RouteEngine{
 	private sectionNumber = 0;
 	private lineNumber = 0;
-	// private korokCount = 0;
-	// private korokSeed = 0;
-	// private shrineCount = 0;
-	// private memoryCount = 0;
-	// private towerCount = 0;
-	// private warpCount = 0;
-	// private talusCount = 0;
-	// private hinoxCount = 0;
-	// private moldugaCount = 0;
+	private step = "1";
+	private korokCount = 0;
+	private korokSeed = 0;
+	private shrineCount = 0;
+	private memoryCount = 0;
+	private towerCount = 0;
+	private warpCount = 0;
+	private talusCount = 0;
+	private hinoxCount = 0;
+	private moldugaCount = 0;
 	// private gale = 0;
 	// private fury = 0;
-	// private step = "1";
+	
 	// private galeRechargeTime = 0;
 	// private furyRechargeTime = 0;
 	// private enableGalePlus = false;
@@ -48,19 +50,23 @@ export class RouteEngine{
 	private initialize(): void {
 		this.sectionNumber = 1;
 		this.lineNumber = 1;
-		// this.korokCount = 0;
-		// this.korokSeed = 0;
-		// this.shrineCount = 0;
-		// this.memoryCount = 0;
-		// this.talusCount = 0;
-		// this.hinoxCount = 0;
+		this.step = "1";
+		this.korokCount = 0;
+		this.korokSeed = 0;
+		this.shrineCount = 0;
+		this.towerCount = 0;
+		this.warpCount = 0;
+		this.memoryCount = 0;
+		this.talusCount = 0;
+		this.hinoxCount = 0;
+		this.moldugaCount = 0;
 		// this.gale = 3;
 		// this.fury = 3;
 		// this.galeRechargeTime = 0;
 		// this.furyRechargeTime = 0;
 		// this.enableGalePlus = false;
 		// this.enableFuryPlus = false;
-		// this.step = "1";
+		
 		// this.variables = {};
 		// this.korokData = newData();
 		// this.dupeKorok = [];
@@ -103,27 +109,81 @@ export class RouteEngine{
 			});
 			return;
 		}
+		
+		let step: string | undefined = undefined;
+		if(data.isStep){
+			step = this.step;
+			this.incStep();
+		}
+
+		const common = {
+			text: data.text,
+			lineNumber: String(this.lineNumber),
+			stepNumber: step,
+			movements: data.movements || [],
+			notes: data.notes
+		}
+
+
 		if(!data.icon){
 			output.push({
+				...common,
 				lineType: "DocLineText",
-				text: data.text,
-				lineNumber: String(this.lineNumber)
 			});
 			this.lineNumber++;
 			return;
 		}
-		if(data.icon){
-			output.push({
-				lineType: "DocLineTextWithIcon",
-				text: data.text,
-				icon: data.icon,
-				comment: data.comment,
-				lineNumber: String(this.lineNumber),
-				counterValue: "?",//todo
-				coord: {x:0, y:0, z:0},//todo
-				splitType: SplitType.None,//todo
-			})
+
+		// counter
+		let counter = "";
+		switch(data.splitType){
+			case SplitType.Shrine:
+				this.shrineCount++;
+				counter = String(this.shrineCount);
+				break;
+			case SplitType.Tower:
+				this.towerCount++;
+				counter = ROMAN_NUMERAL[this.towerCount];
+				break
+			case SplitType.Korok:
+				this.korokCount++;
+				this.korokSeed++;
+				counter = String(this.korokCount);
+				break;
+			case SplitType.Warp:
+				this.warpCount++;
+				counter = String(this.warpCount);
+				break;
+			case SplitType.Memory:
+				this.memoryCount++;
+				counter = ROMAN_NUMERAL[this.memoryCount];
+				break;
+			case SplitType.Hinox:
+				this.hinoxCount++;
+				counter = String(this.hinoxCount);
+				break;
+			case SplitType.Talus:
+				this.talusCount++;
+				counter = String(this.talusCount);
+				break;
+			case SplitType.Molduga:
+				this.moldugaCount++;
+				counter = String(this.moldugaCount);
+				break;
 		}
+
+
+		output.push({
+			...common,
+			lineType: "DocLineTextWithIcon",
+			icon: data.icon,
+			comment: data.comment,
+			
+			counterValue: counter,
+			splitType: data.splitType,
+			mapLineColor: data.lineColor,
+			hideIconOnMap: data.hideIconOnMap
+		})
 		
 		this.lineNumber++;
 	}
@@ -485,15 +545,15 @@ export class RouteEngine{
 	// 	}
 	// }
 
-	// private incStep():void {
-	// 	if(this.step === "Z"){
-	// 		this.step = "0";
-	// 	}else if(this.step === "9"){
-	// 		this.step = "A";
-	// 	}else{
-	// 		this.step = String.fromCharCode(this.step.charCodeAt(0)+1);
-	// 	}
-	// }
+	private incStep():void {
+		if(this.step === "Z"){
+			this.step = "0";
+		}else if(this.step === "9"){
+			this.step = "A";
+		}else{
+			this.step = String.fromCharCode(this.step.charCodeAt(0)+1);
+		}
+	}
 
 	// private hasCommand(find: EngineCommand, commands?: EngineCommand[]): boolean {
 	// 	if(!commands){

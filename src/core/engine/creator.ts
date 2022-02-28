@@ -109,43 +109,7 @@ export {};// import { wbex } from "./windbomb";
 // 	});
 // };
 
-// const mapKorokToImage = (korok: string):string =>{
-// 	switch(korok){
-// 		case "Acorn": return "korok-acorn";
-// 		case "Acorn Flying": return "korok-acorn-flying";
-// 		case "Acorn in Log": return "korok-acorn";
-// 		case "Balloon": return "korok-balloon";
-// 		case "Basketball": return "korok-basketball";
-// 		case "Block Puzzle": return "korok-magnesis";
-// 		case "Boulder Golf": return "korok-golf-boulder";
-// 		case "Confetti": return "korok-confetti";
-// 		case "Flower Chase": return "korok-flower";
-// 		case "Flower Count": return "korok-flower";
-// 		case "Ice Block": return "korok-ice";
-// 		case "Lift Rock": return "korok-rock";
-// 		case "Lift Rock (Door)": return "korok-magnesis";
-// 		case "Lift Rock (Tree)": return "korok-rock-tree";
-// 		case "Lift Rock Blocked": return "korok-rock-under";
-// 		case "Lift Rock Blkd": return "korok-rock-under";
-// 		case "Light Chase": return "korok-light-chase";
-// 		case "Lily Pads": return "korok-lily";
-// 		case "Match Tree": return "korok-matching";
-// 		case "Match Cactus": return "korok-matching";
-// 		case "Metal Box Circle": return "korok-magnesis";
-// 		case "Offer Apple": return "korok-offer-apple";
-// 		case "Offer Banana": return "korok-offer-banana";
-// 		case "Offer Durian": return "korok-offer-durian";
-// 		case "Offer Egg": return "korok-offer-egg";
-// 		case "Offer Pepper": return "korok-offer-apple";
-// 		case "Race": return "korok-race";
-// 		case "Rock Circle": return "korok-rock-circle";
-// 		case "Shoot Emblem": return "korok-shoot";
-// 		case "Snowball Golf": return "korok-golf-snowball";
-// 		case "Tree Stump": return "korok-magnesis";
-// 		case "Well": return "korok-magnesis";
-// 		default: return "korok";
-// 	}
-// };
+
 
 // const mapKorokToEstimate = (korok: string):number =>{
 // 	switch(korok){

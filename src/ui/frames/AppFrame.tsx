@@ -1,6 +1,6 @@
-import L, { LatLngBounds } from "leaflet";
+import L, { LatLngBounds,  } from "leaflet";
 import { useState } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer ,Marker, Popup} from "react-leaflet";
 import TestImage from 'data/image/shrine.png';
 import { MenuItem, MenuItemWithValue } from "../../components/MenuItem/MenuItem";
 import { useAppRoot } from "ui/root";
@@ -8,14 +8,19 @@ import { useStyles } from "ui/styles";
 import { MapDisplayMode } from "data/settings";
 import "data/scripts";
 import { DocLineComponent } from "ui/components/DocLineComponent";
-import { DocLine, SplitType } from "core/route";
 import { StringType } from "data/assembly/text/type";
 import { DocFrame } from "./DocFrame";
 import { BannerType, RouteAssemblySection } from "data/assembly/types";
 import { RouteEngine } from "core/engine";
+import { Compiler } from "data/assembly/Compiler";
+import { MapEngine } from "core/map";
+import { MapComponent } from "ui/components/MapComponent/MapComponent";
+import { useEngineService } from "ui/root/EngineService";
 
 
-const engine = new RouteEngine();
+// const engine = new RouteEngine();
+// const compiler = new Compiler();
+// const mapengine = new MapEngine();
 
 export interface AppFrameProps  {
     // appStyle: AppClassNames & AppStyle,
@@ -28,238 +33,26 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
   const {map, setMap, mapDisplayMode, setMapDisplayMode, theme, setTheme} = useAppRoot();
   const styles = useStyles();
     const [showMenu, setShowMenu] = useState(false);
-  
-    const testRoute: RouteAssemblySection[] = [
-      {
-        name: "Plateau",
-        route: [
-          {
-            text: {content: "SOR Clip", type: StringType.Normal}
-          },
-          {
-            text: {content: "No need to get TOD", type: StringType.Normal},
-            bannerType: BannerType.Notes,
-            bannerTriangle: true
-          },
-          {
-            text: {content: "Potlid", type: StringType.Item},
-            icon: "equipment",
-            comment: {content: "Best shield", type: StringType.Normal},
-          }
-        ]
-      }
-    ];
-    const computedLines = engine.compute(testRoute);
+
+    
+    // const computedRoute = compiler.compile(testScript as unknown as RouteScriptSection[]);
+    // console.log(computedRoute);
+    // const computedLines = engine.compute(computedRoute);
+    // const [mapIcons, mapLines] = mapengine.compute(computedLines);
+    // console.log(mapLines);
    
-  const testdoclines:DocLine[] = [
-    {lineType: "DocLineSection", sectionName: "Plateau 1", sectionNumber: 1},
-    {
-      lineType: "DocLineText",
-      lineNumber: "123",
-      text: {content:"something", type: StringType.Normal},
-      notes: {content:"test test", type: StringType.Normal}
-    },
-    {
-      lineType: "DocLineText",
-      lineNumber: "123",
-      text: {content:"something", type: StringType.Normal},
-      notes: {content:"test test", type: StringType.Normal}
-    },
-    {
-      lineType: "DocLineText",
-      lineNumber: "123",
-      stepNumber: "1",
-      text: {content:"something", type: StringType.Normal},
-      notes: {content:"test test", type: StringType.Normal}
-    },
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "123",
-      stepNumber: "2",
-      text:  {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "0",
-      splitType: SplitType.None,
-      icon: TestImage
-    },
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "123",
-      stepNumber: "2",
-      text:  {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "0",
-      splitType: SplitType.None,
-      icon: TestImage
-    },
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "123",
-      stepNumber: "2",
-      text:  {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "0",
-      splitType: SplitType.None,
-      icon: TestImage
-    },
-    {lineType: "DocLineSection", sectionName: "Rupee Printing", sectionNumber: 2},
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "1234",
-      stepNumber: "2",
-      text:  {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      notes:{content:"notes", type: StringType.Normal},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "0",
-      splitType: SplitType.None,
-      icon: TestImage
-    },
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "1234",
-      stepNumber: "2",
-      text: {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      notes:{content:"notes", type: StringType.Normal},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "0",
-      splitType: SplitType.Shrine,
-      icon: TestImage
-    },
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "1234",
-      stepNumber: "2",
-      text:{content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      notes:{content:"notes", type: StringType.Normal},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "0",
-      splitType: SplitType.Hinox,
-      icon: TestImage
-    },
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "1234",
-      stepNumber: "2",
-      text: {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      notes:{content:"notes", type: StringType.Normal},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "0",
-      splitType: SplitType.Korok,
-      icon: TestImage
-    },
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "1234",
-      stepNumber: "2",
-      text: {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      notes:{content:"notes", type: StringType.Normal},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "XIII",
-      splitType: SplitType.Memory,
-      icon: TestImage
-    },
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "1234",
-      stepNumber: "2",
-      text: {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      notes:{content:"notes", type: StringType.Normal},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "XIII",
-      splitType: SplitType.Memory,
-      icon: TestImage
-    },
-     {lineType: "DocLineBanner",
-    bannerType: BannerType.Error, 
-    text: {content: "ERROR: Fury might not be back (Recharge time is 240 seconds, estimated time is 200 seconds) long long long long long long long", type: StringType.Normal},
-     showTriangle: true},
-    {lineType: "DocLineBanner",
-    bannerType: BannerType.Warning, 
-    text: {content: "ERROR: Fury might not be back (Recharge time is 240 seconds, estimated time is 200 seconds) long long long long long long long", type: StringType.Normal},
-
-    showTriangle: true},
-
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "1234",
-      stepNumber: "2",
-      text: {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      notes:{content:"notes", type: StringType.Normal},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "XIII",
-      splitType: SplitType.Talus,
-      icon: TestImage
-    },
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "1234",
-      stepNumber: "2",
-      text: {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      notes:{content:"notes", type: StringType.Normal},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "XIV",
-      splitType: SplitType.Tower,
-      icon: TestImage
-    },
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "1234",
-      stepNumber: "2",
-      text: {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      notes:{content:"notes", type: StringType.Normal},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "XIV",
-      splitType: SplitType.Warp,
-      icon: TestImage
-    },
-     {lineType: "DocLineBanner",
-    bannerType: BannerType.Error, 
-    text: {content: "ERROR: Fury might not be back (Recharge time is 240 seconds, estimated time is 200 seconds) long long long long long long long", type: StringType.Normal}
-, 
-    showTriangle: false},
-
- {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "1234",
-      stepNumber: "2",
-      text: {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      notes:{content:"notes", type: StringType.Normal},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "",
-      splitType: SplitType.UserDefined,
-      icon: TestImage
-    },
-    {
-      lineType: "DocLineTextWithIcon",
-      lineNumber: "1234",
-      stepNumber: "2",
-      text: {content:"something", type: StringType.Normal},
-      coord: {x: 0 ,y: 0,z:0},
-      notes:{content:"notes", type: StringType.Normal},
-      comment: {content:"comment", type: StringType.Normal},
-      counterValue: "3",
-      splitType: SplitType.Molduga,
-      icon: TestImage
-    },
-  ]
+    const {metadata, docLines, mapIcons, mapLines} = useEngineService();
+    let errorCount = 0;
+    docLines.forEach(l=>{
+      if(l.lineType === "DocLineBanner" && l.bannerType === BannerType.Error){
+        errorCount++;
+      }
+    })
   
   return (
     <div className={styles.appFrame}>
       
-      <DocFrame docLines={computedLines}/>
+      <DocFrame docLines={docLines} map={map}/>
 
 
 
@@ -304,15 +97,15 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
                           throw new Error("Function not implemented.");
                       } } style={appStyle} text={"Route Custom Theme: "} /> */}
 
-    <div className={styles.contribution}>&nbsp;<div className={styles.menuItemValue}>celer-engine v0.0.0</div></div>
+    <div className={styles.contribution}>&nbsp;<div className={styles.menuItemValue}>celer-engine v1.0.0</div></div>
     </div>}
     <div className={styles.statusBar}>
     <div className={styles.statusMessage}>
-        Prototype
+        {metadata.Name}
       </div>
       <div className={styles.statusErrorString}>
       
-      <span>0 Error</span>
+      <span>{errorCount || "No"} Error{errorCount > 1 && "s"}</span>
 
       </div>
       <div className={styles.menuAnchor} onClick={(e)=>{setShowMenu(true);e.stopPropagation()}}>
@@ -324,7 +117,6 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
   </div>
 
       <div className={styles.mapFrame}>
-          {(()=>(
       <MapContainer style={{height: "100%", backgroundColor:"black"}}center={[0, 0]} zoom={4} crs={L.CRS.Simple} minZoom={3} 
       attributionControl={false}
       zoomControl={false}
@@ -332,17 +124,46 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
   whenCreated={(map)=>{
     setMap(map);
     setTimeout(()=>{map.invalidateSize()}, 1000);
+    // L.marker([0,0],{
+    //   icon: L.icon({
+    //     iconUrl: TestImage,
+    //     iconSize: [32,32]
+    //   })
+    // } ).addTo(map);
+    // L.marker([-10,10],{
+    //   icon: L.icon({
+    //     iconUrl: TestImage,
+    //     iconSize: [32,32]
+    //   })
+    // } ).addTo(map);
+    // L.polyline([[0,0], [10,10], [-10,10]], {
+    //   color: "red"
+    // }).arrowheads({
+    //   fill: true,
+    //   size: "16px",
+      
+    // }).addTo(map);
+    // L.polyline([[-10,10], [20,-30], [0,10]]).arrowheads({
+    //   fill: true,
+    //   size: "16px"
+    // }).addTo(map);
+    
     }}>
       
   <TileLayer
     noWrap
     tileSize={256}
-    errorTileUrl="tiles/empty.png"
-    url="tiles/{z}/{x}_{y}.png"
+    errorTileUrl="celer/tiles/empty.png"
+    url="celer/tiles/{z}/{x}_{y}.png"
   />
-  </MapContainer>))()
-}
+    {/* <Marker position={[0,0]}>
+    <Popup>
+      A pretty CSS3 popup. <br /> Easily customizable.
+    </Popup>
+  </Marker> */}
+  </MapContainer>
       </div>
+      <MapComponent map={map} icons={mapIcons} lines={mapLines}></MapComponent>
       
       {/* <div style={{position: "fixed", backgroundColor: "rgba(0,0,0,0.5)", width: "100vw", height: "100vh", zIndex:99999}}>
       <div style={{margin: "calc( ( 100vw - 30em ) / 2 )", height: "100%"}}>
@@ -357,12 +178,8 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
       </div>
       </div> */}
   
-  {/* <Marker position={[-32, -39.0625]}>
-    <Popup>
-      A pretty CSS3 popup. <br /> Easily customizable.
-    </Popup>
-  </Marker>
-  <Marker position={[32, -39.0625]}>
+
+  {/* <Marker position={[32, -39.0625]}>
     <Popup>
       A pretty CSS3 popup. <br /> Easily customizable.
     </Popup>

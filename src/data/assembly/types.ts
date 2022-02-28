@@ -16,15 +16,12 @@ export type RouteAssembly = { //RouteAssembly
 	icon?: string,
 	comment?: TypedStringBlock,
 	// Detailed Notes
-	//notes?: TypedStringBlock,
+	notes?: TypedStringBlock,
+	// isStep
+	isStep?: boolean,
 
-	//isStep: boolean,
-	//isShrine: boolean,
-	//isMemory: boolean,
-	//isTower: boolean,
-	//isWarp: boolean,
+	splitType: SplitType,
 	//korokCode?: string,
-	//bossType: BossType,
 	//spendSeed: number,
 
 	// Variable Changes
@@ -40,6 +37,9 @@ export type RouteAssembly = { //RouteAssembly
 	// suppressError?: EngineError[],
 	// // Engine command
 	// command?: EngineCommand[],
+	movements?: Movement[],
+	lineColor?: string,
+	hideIconOnMap?: boolean,
 }
 
 export enum BannerType {
@@ -119,26 +119,25 @@ export type AbilityUsage = {
 	gale?: number,
 }
 
-export type ChangeData = {
-	version: string,
-	date: string,
-	changes: (string | string[])[],
+export type Movement = {
+    to: Coord;// target of the movement
+    isWarp: boolean; // if true, do not draw a line for this movement
+    isAway: boolean; // if true, do not advance current position to target
 }
 
-// Type helpers
-// export const useInstructionLike = <T>(instructionFunction: (input: Instruction)=>T):(input?: InstructionLike)=>T => {
-// 	return input =>instructionFunction(instructionLikeToInstruction(input));
-// };
+export type Coord = {x: number, z: number}
 
-// export const useMultiText= <T>(instructionFunction: (input?: InstructionLike)=>T):(input?: InstructionLike, ...moreInput: TextLike[])=>T => {
-// 	return (input, ...moreInput)=>{
-// 		if(isInstruction(input) || moreInput.length === 0){
-// 			return instructionFunction(instructionLikeToInstruction(input));
-// 		}
-// 		//If there is multiple inputs, cat the texts
-// 		const text = txt(input as TextLike, ...moreInput);
-// 		return instructionFunction(instructionLikeToInstruction(text));
-// 	};
-    
-// };
+
+export enum SplitType {
+    None,
+    Shrine, //1 - 120
+    Tower, //I - XV
+    Warp, // 1-??
+    Memory, // I - XIII
+    Korok, //1 - 900
+    Hinox, //1-40
+    Talus, //1-40
+    Molduga, //1-4
+    UserDefined
+}
 

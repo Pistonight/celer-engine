@@ -1,37 +1,52 @@
 import clsx from "clsx";
-import { DocLineText, DocLineTextWithIcon, SplitType } from "core/route";
+import { DocLineText, DocLineTextWithIcon } from "core/route";
 import { useStyles } from "ui/styles";
 import { TypedStringComponent } from "../TypedStringComponent";
 import Icons from "data/image";
 import { MapOf } from "data/util";
+import { gameCoordToMapCoord } from "core/map";
+import { SplitType } from "data/assembly";
+import { isEmptyString } from "data/assembly/text/type";
 
 export interface DocLineTextProps{
     docLine: DocLineText,
+    map?: L.Map,
     altLineColor?: boolean,
     altNotesColor?: boolean,
 }
 
 export interface DocLineTextWithIconProps{
     docLine: DocLineTextWithIcon,
+    map?: L.Map,
     altLineColor?: boolean,
     altNotesColor?: boolean,
 }
 
-const LineNumber: React.FC<DocLineTextProps> = ({docLine})=>{
+const centerMapToLine = (docLine: DocLineText | DocLineTextWithIcon, map?: L.Map): void => {
+    if(map){
+        const movements = docLine.movements;
+        if(movements.length > 0){
+            const coord = movements[0].to;
+            map.flyTo(gameCoordToMapCoord(coord));
+        }
+    }
+}
+
+const LineNumber: React.FC<DocLineTextProps> = ({map, docLine})=>{
     const {lineNumber} = docLine;
     const styles = useStyles();
     return (
-        <div className={styles.lineNumber}>
+        <div className={styles.lineNumber} onClick={()=>centerMapToLine(docLine, map)}>
             <span className="code">{lineNumber}</span>
         </div>
     );
 }
 
-const LineNumberWithIcon: React.FC<DocLineTextWithIconProps> = ({docLine})=>{
+const LineNumberWithIcon: React.FC<DocLineTextWithIconProps> = ({map, docLine})=>{
     const {lineNumber} = docLine;
     const styles = useStyles();
     return (
-        <div className={clsx(styles.lineNumber, styles.lineNumberWithIcon)}>
+        <div className={clsx(styles.lineNumber, styles.lineNumberWithIcon)} onClick={()=>centerMapToLine(docLine, map)}>
             <span className="code">{lineNumber}</span>
             <div className={styles.commentFont}>&nbsp;</div>
         </div>
@@ -129,24 +144,24 @@ const Notes: React.FC<DocLineTextProps | DocLineTextWithIconProps> = ({docLine, 
     );
 }
 
-export const DocLineTextComponent: React.FC<DocLineTextProps> = ({docLine,altLineColor,altNotesColor})=> {
+export const DocLineTextComponent: React.FC<DocLineTextProps> = ({map, docLine,altLineColor,altNotesColor})=> {
     const {text} = docLine;
     const styles = useStyles();
     
     return (
         <div className={clsx(styles.lineContainer, altLineColor && styles.lineContainerAlt)}>
-            <LineNumber docLine={docLine} />
+            <LineNumber map={map} docLine={docLine} />
             <NoCounter />
             <StepNumber docLine={docLine} />
             <span className={clsx(styles.instruction, styles.instructionDefaultColor)}>
-                <TypedStringComponent content={text} variables={{}} />
+                <TypedStringComponent content={text} variables={{}} />{"\u200b"}
             </span>
             <Notes docLine={docLine} altNotesColor={altNotesColor} />
         </div>
     );
 };
 
-export const DocLineTextWithIconComponent: React.FC<DocLineTextWithIconProps> = ({docLine,altLineColor,altNotesColor})=> {
+export const DocLineTextWithIconComponent: React.FC<DocLineTextWithIconProps> = ({map, docLine,altLineColor,altNotesColor})=> {
     const {text, icon, comment, splitType} = docLine;
     const styles = useStyles();
     
@@ -177,10 +192,9 @@ export const DocLineTextWithIconComponent: React.FC<DocLineTextWithIconProps> = 
             textStyleName = styles.instructionMoldugaColor;
             break;
     }
-    console.log(Icons);
     return (
         <div className={clsx(styles.lineContainer, altLineColor && styles.lineContainerAlt)}>
-            <LineNumberWithIcon docLine={docLine} />
+            <LineNumberWithIcon map={map} docLine={docLine} />
             <Counter docLine={docLine} />
             <StepNumberWithIcon docLine={docLine}/>
             <div className={clsx(styles.instruction, styles.instructionWithIcon, textStyleName)}>
@@ -190,7 +204,7 @@ export const DocLineTextWithIconComponent: React.FC<DocLineTextWithIconProps> = 
                 <div className={styles.iconSideText}>
                     <TypedStringComponent content={text} variables={{}} />
                     <div className={clsx(styles.commentFont, styles.commentColor)}>
-                        {comment && <TypedStringComponent content={comment} variables={{}} />}
+                        {comment && <TypedStringComponent content={comment} variables={{}} />}{"\u200b"}
                     </div>
                 </div>
             </div>
