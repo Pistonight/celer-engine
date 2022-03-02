@@ -1,4 +1,4 @@
-import { TypedStringBlock } from "data/assembly/text/type";
+import { TypedString } from "./text";
 import { MapOf } from "data/util";
 
 export type RouteAssemblySection = {
@@ -8,15 +8,15 @@ export type RouteAssemblySection = {
 
 export type RouteAssembly = { //RouteAssembly
 	// Main text
-	text: TypedStringBlock,
+	text: TypedString,
 	// Banner mode. If not undefined, text is treated as a banner and everything else is ignored
 	bannerType?: BannerType,
 	bannerTriangle?: boolean,
 	// Icon and comment to make a 2-line instruction
 	icon?: string,
-	comment?: TypedStringBlock,
+	comment?: TypedString,
 	// Detailed Notes
-	notes?: TypedStringBlock,
+	notes?: TypedString,
 	// isStep
 	isStep?: boolean,
 

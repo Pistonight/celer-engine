@@ -1,37 +1,18 @@
 import { RouteScriptExtend, RouteSection, RouteStep, switchModule, switchSection, switchStep, TARGET_VERSION} from "data/compile";
-import { findPair } from "yaml/dist/nodes/YAMLMap";
 import { Movement, SplitType } from ".";
-import ChestModule from "./modules/Chest";
-import ChestSpecialModule from "./modules/ChestSpecial";
-import CustomModule from "./modules/Custom";
-import EquipmentModule from "./modules/Equipment";
-import KorokModule from "./modules/Korok";
-import ShrineModule from "./modules/Shrine";
-import TowerModule from "./modules/Tower";
-import WarpModule from "./modules/Warp";
-import { StringParser } from "./StringParser";
-import { StringType, TypedStringBlock } from "./text/type";
+import { getModules,CompilerPresetModule } from "./modules";
+import { StringParser } from "./text";
 import { BannerType, RouteAssembly, RouteAssemblySection } from "./types";
 
 export class Compiler {
-    private stringParser = new StringParser();
-    private modules = [
-        KorokModule,
-        ShrineModule,
-        TowerModule,
-        WarpModule,
-        EquipmentModule,
-        ChestModule,
-        ChestSpecialModule,
-        CustomModule
-    ]
+    private modules: CompilerPresetModule[] = getModules();
 
     public compile(version: string, sections: RouteSection[]): RouteAssemblySection[] {
         const compiled = this.compileSections(sections);
         if(version !== TARGET_VERSION){
             compiled.splice(0, 0, {
                 route: [{
-                    text: this.parseStringBlock("Compiler Version Mismatch Warning: The compiler version is "+TARGET_VERSION+", but the loaded route was compiled under version "+version+". Please consider upgrading to the latest compiler at https://github.com/iTNTPiston/celer-compiler if you see any unexpected issues."),
+                    text: StringParser.parseStringBlockSimple("Compiler Version Mismatch Warning: The compiler version is "+TARGET_VERSION+", but the loaded route was compiled under version "+version+". Please consider upgrading to the latest compiler at https://github.com/iTNTPiston/celer-compiler if you see any unexpected issues."),
                     bannerTriangle: false,
                     bannerType: BannerType.Warning ,
                     splitType: SplitType.None
@@ -42,7 +23,7 @@ export class Compiler {
         const emptyLines = []
         for(let i = 0; i<20;i++){
             emptyLines.push({
-                text: {content: " ", type: StringType.Normal},
+                text: StringParser.parseStringBlockSimple(""),
                 splitType: SplitType.None
             });
         }
@@ -112,65 +93,53 @@ export class Compiler {
     }
 
     private compileStepString(stepString: string): RouteAssembly{
-        const isStep = stepString.startsWith("+");
-        if(isStep){
-            stepString = stepString.substring(1).trimStart();
+        const { header, typedString } = StringParser.parseStringBlock(stepString);
+
+        if (header.bannerType){
+            return {
+                text: typedString,
+                bannerTriangle: header.bannerTriangle,
+                bannerType: header.bannerType,
+                splitType: SplitType.None
+            };
         }
+
         // Attempt to parse preset
         for(let i = 0;i<this.modules.length;i++){
-            if(this.modules[i].recognizes(stepString)){
-                const stepAssembly = this.modules[i].compile(stepString, this.stringParser);
-                if(isStep){
+            const stepAssembly = this.modules[i].compile(typedString);
+            if(stepAssembly){
+                if(header.isStep){
                     stepAssembly.isStep = true;
                 }
                 return stepAssembly;
             }
         }
 
-        const isBanner = stepString.startsWith("(==)") || stepString.startsWith("(!=)") || stepString.startsWith("(^=)");
-        const bannerTriangle = stepString.startsWith("(^=)");
-        const bannerError = stepString.startsWith("(!=)");
-        if(isBanner){
-            stepString = stepString.substring(4).trimStart();
-            return {
-                text: this.parseStringBlock(stepString),
-                bannerTriangle: bannerTriangle,
-                bannerType: bannerError? BannerType.Error: BannerType.Notes,
-                splitType: SplitType.None
-            }
-        }
-        return {
-            text: this.parseStringBlock(stepString),
-            isStep,
-            splitType: SplitType.None
-        }
+        return this.makeCompilerError("Unexpected Error Compiler.compileStepString. This is likely a bug in the compiler");
     }
 
     private compilePresetExtend(preset:string, extend: RouteScriptExtend): RouteAssembly | undefined{
-        const isStep = preset.startsWith("+");
-        if(isStep){
-            preset = preset.substring(1).trimStart();
-        }
+        const { header, typedString } = StringParser.parseStringBlock(preset);
         for(let i = 0;i<this.modules.length;i++){
-            if(this.modules[i].recognizes(preset)){
-                const stepAssembly = this.modules[i].compile(preset, this.stringParser);
+            const stepAssembly = this.modules[i].compile(typedString);
+            if(stepAssembly){
                 this.applyExtend(stepAssembly, extend);
-                if(isStep){
+                if(header.isStep){
                     stepAssembly.isStep = true;
                 }
                 return stepAssembly;
             }
         }
-        return undefined;
+        return this.makeCompilerError("Unexpected Error Compiler.compilePresetExtend. This is likely a bug in the compiler");
     }
 
     private applyExtend(data: RouteAssembly, extend: RouteScriptExtend): void {
         if(extend.text){
-            data.text = this.parseStringBlock(extend.text);
+            data.text = StringParser.parseStringBlockSimple(extend.text);
         }
 
         if(extend.comment){
-            data.comment = this.parseStringBlock(extend.comment);
+            data.comment = StringParser.parseStringBlockSimple(extend.comment);
         }
 
         if(extend.icon){
@@ -178,7 +147,7 @@ export class Compiler {
         }
 
         if(extend.notes){
-            data.notes =  this.parseStringBlock(extend.notes);
+            data.notes =  StringParser.parseStringBlockSimple(extend.notes);
         }
 
         if(extend["line-color"]){
@@ -219,15 +188,11 @@ export class Compiler {
 
     private makeCompilerError(error: string): RouteAssembly {
         return  {
-            text: this.parseStringBlock("Compile Error: "+error),
+            text: StringParser.convertToTypedString("Compile Error: "+error),
             bannerTriangle: false,
             bannerType: BannerType.Error,
             splitType: SplitType.None
         };
-    }
-
-    private parseStringBlock(str: string): TypedStringBlock {
-        return this.stringParser.parseStringBlock(str);
     }
 
 }

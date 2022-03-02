@@ -43,9 +43,9 @@ export const getServiceConfig = ():ServiceConfig => {
     }
     if(parsedQueryString["Service"]){
         const service = getStringConfig(parsedQueryString["Service"]);
-        if(service === "pastebin"){
+        if(service === "gh"){
             return {
-                scriptUrl: `https://thingproxy.freeboard.io/fetch/https://pastebin.com/raw/${id}`,
+                scriptUrl: `https://raw.githubusercontent.com/${id}`,
                 id: String(id)
             }
         }

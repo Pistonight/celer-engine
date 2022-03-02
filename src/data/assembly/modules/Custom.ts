@@ -1,14 +1,12 @@
-import { StringParser } from "../StringParser";
+import { TypedString } from "../text";
 import { RouteAssembly, SplitType } from "../types";
 import { CompilerPresetModule } from "./Module";
 
 class CustomModule implements CompilerPresetModule {
-    public recognizes(_: string): boolean {
-        return true;
-    }
-    public compile(name: string, parser: StringParser): RouteAssembly {
+
+    public compile(typedString: TypedString): RouteAssembly {
         return {
-           text: parser.parseStringBlock(name),
+           text: typedString,
            splitType: SplitType.None
         }
     }

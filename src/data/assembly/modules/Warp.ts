@@ -1,5 +1,4 @@
-import { BannerType, SplitType } from "..";
-import { StringParser } from "../StringParser";
+import { BannerType, SplitType, StringType, TypedString, TypedStringSingle } from "..";
 import { RouteAssembly } from "../types";
 import { CompilerPresetModule } from "./Module";
 import ShrineModule from "./Shrine";
@@ -8,16 +7,16 @@ import TowerModule from "./Tower";
 const PREFIX = "_TravelMedallion<";
 const SUFFIX = ">";
 class WarpModule implements CompilerPresetModule {
-    public recognizes(name: string): boolean {
-        return name.startsWith("_Warp::");
-    }
-    public compile(name: string, parser: StringParser): RouteAssembly {
-        name = name.replace("_Warp::", "_");
-        let module;
-        if (ShrineModule.recognizes(name)){
-            module = ShrineModule.compile(name, parser);
-        }else if(TowerModule.recognizes(name)){
-            module = TowerModule.compile(name, parser);
+
+    public compile(typedString: TypedString): RouteAssembly | undefined {
+        const name = typedString.toString();
+        if(!name.startsWith("_Warp::")){
+            return undefined;
+        }
+        const location = name.replace("_Warp::", "_");
+        let module = ShrineModule.compileName(location);
+        if(!module){
+            module = TowerModule.compileName(location);
         }
 
         if(module){
@@ -28,10 +27,13 @@ class WarpModule implements CompilerPresetModule {
                 module.movements[0].isWarp = true;
             }
         }else{
-            switch(name){
+            switch(location){
                 case "_TechLab::Hateno":
                     module = {
-                        text: parser.parseStringBlock("Hateno Tech Lab"),
+                        text: new TypedStringSingle({
+                            content: "Hateno Tech Lab",
+                            type: StringType.Location,
+                        }),
                         icon: "warp",
                         splitType: SplitType.Warp,
                         movements: [{
@@ -43,7 +45,10 @@ class WarpModule implements CompilerPresetModule {
                     break;
                 case "_TechLab::Akkala":
                     module = {
-                        text: parser.parseStringBlock("Akkala Tech Lab"),
+                        text: new TypedStringSingle({
+                            content: "Akkala Tech Lab",
+                            type: StringType.Location,
+                        }),
                         icon: "warp",
                         splitType: SplitType.Warp,
                         movements: [{
@@ -54,13 +59,16 @@ class WarpModule implements CompilerPresetModule {
                     };
                     break;
             }
-            if(!module && name.startsWith(PREFIX) && name.endsWith(SUFFIX)){
-                name = name.substring(PREFIX.length, name.length-SUFFIX.length);
-                const parts = name.split(",");
+            if(!module && location.startsWith(PREFIX) && location.endsWith(SUFFIX)){
+                const coords = location.substring(PREFIX.length, name.length-SUFFIX.length);
+                const parts = coords.split(",");
                 const x = Number(parts[0]);
                 const z = Number(parts[1]);
                 module = {
-                    text: parser.parseStringBlock("Travel Medallion"),
+                    text: new TypedStringSingle({
+                        content: "Travel Medallion",
+                        type: StringType.Location,
+                    }),
                     icon: "warp",
                     splitType: SplitType.Warp,
                     movements: [{
@@ -71,7 +79,10 @@ class WarpModule implements CompilerPresetModule {
                 };
             }else{
                 module = {
-                    text: parser.parseStringBlock("Invalid Warp"),
+                    text: new TypedStringSingle({
+                        content: "Travel Invalid Warp",
+                        type: StringType.Normal,
+                    }),
                     bannerType: BannerType.Error,
                     splitType: SplitType.None
                 } as RouteAssembly;

@@ -8,7 +8,7 @@ import { useStyles } from "ui/styles";
 import { MapDisplayMode } from "data/settings";
 import "data/scripts";
 import { DocLineComponent } from "ui/components/DocLineComponent";
-import { StringType } from "data/assembly/text/type";
+import { StringType } from "data/assembly/text/TypedString";
 import { DocFrame } from "./DocFrame";
 import { BannerType, RouteAssemblySection } from "data/assembly/types";
 import { RouteEngine } from "core/engine";

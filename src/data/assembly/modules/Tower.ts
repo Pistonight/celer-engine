@@ -1,12 +1,12 @@
 // Tower::Name
 // 15 towers
 import { MapOf } from "data/util";
-import { StringParser } from "../StringParser";
+import { StringType, TypedString, TypedStringSingle } from "../text";
 import { RouteAssembly, SplitType } from "../types";
 import { CompilerPresetModule } from "./Module";
 
 class TowerModule implements CompilerPresetModule {
-    private map: MapOf<(parser: StringParser) => RouteAssembly> = {};
+    private map: MapOf<() => RouteAssembly> = {};
     
     constructor(){
        
@@ -28,17 +28,24 @@ class TowerModule implements CompilerPresetModule {
 
     }
 
-    public recognizes(name: string): boolean {
-        return name in this.map;
+    public compile(typedString: TypedString): RouteAssembly | undefined {
+        return this.compileName(typedString.toString());
     }
-    public compile(name: string, parser: StringParser): RouteAssembly {
-        return this.map[name](parser);
+
+    public compileName(name: string): RouteAssembly | undefined {
+        if(!(name in this.map)){
+            return undefined;
+        }
+        return this.map[name]();
     }
 
     private addTower(name: string,  coord: [number, number, number] = [0,0,0]): void{
         const compactName = "_Tower::"+name.replaceAll("'", "").replaceAll(" ", "");
-        this.map[compactName] = (parser) => ({
-            text: parser.parseStringBlock(name+ " Tower"),
+        this.map[compactName] = () => ({
+            text: new TypedStringSingle({
+                content: name+ " Tower",
+                type: StringType.Location
+            }),
             icon: "tower",
             splitType: SplitType.Tower,
             movements: [{

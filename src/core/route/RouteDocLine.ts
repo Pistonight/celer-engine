@@ -1,5 +1,5 @@
-import { TypedStringBlock } from "data/assembly/text/type";
-import { BannerType, Movement, SplitType } from "data/assembly/types";
+
+import { BannerType, Movement, SplitType, TypedString } from "data/assembly";
 
 export type DocLine = 
     DocLineSection |
@@ -16,7 +16,7 @@ export interface DocLineSection {
 export interface DocLineBanner {
     lineType: "DocLineBanner";
     bannerType: BannerType;
-    text: TypedStringBlock;
+    text: TypedString;
     showTriangle: boolean;
 }
 
@@ -26,8 +26,8 @@ export interface DocLineText {
     
     stepNumber?: string,
     
-    text: TypedStringBlock,
-    notes?: TypedStringBlock,
+    text: TypedString,
+    notes?: TypedString,
 
     movements: Movement[];
     mapLineColor?: string;
@@ -39,7 +39,7 @@ export interface DocLineTextWithIcon extends Omit<DocLineText, "lineType"> {
 
     
     splitType: SplitType;
-    comment?: TypedStringBlock;
+    comment?: TypedString;
     icon: string;
     counterValue: string;
 

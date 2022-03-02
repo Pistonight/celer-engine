@@ -1,12 +1,12 @@
 // Korok::ID
 // 900 koroks
 import { MapOf } from "data/util";
-import { StringParser } from "../StringParser";
+import { StringType, TypedString, TypedStringSingle } from "../text";
 import { RouteAssembly, SplitType } from "../types";
 import { CompilerPresetModule } from "./Module";
 
 class KorokModule implements CompilerPresetModule {
-    private map: MapOf<(parser: StringParser) => RouteAssembly> = {};
+    private map: MapOf<() => RouteAssembly> = {};
     
     constructor(){
         this.addKorok("A01", [3075.875244140625,318.83917236328125,-3684.381103515625], KorokType.LiftRockTree);
@@ -915,14 +915,28 @@ class KorokModule implements CompilerPresetModule {
     public recognizes(name: string): boolean {
         return name.startsWith("_Korok::") && name.substring(8) in this.map;
     }
-    public compile(name: string, parser: StringParser): RouteAssembly {
-        return this.map[name.substring(8)](parser);
+    public compile(typedString: TypedString): RouteAssembly | undefined {
+        const content = typedString.toString();
+        if (!content.startsWith("_Korok::")){
+            return undefined;
+        }
+        const id = content.substring(8);
+        if(!(id in this.map)){
+            return undefined;
+        }
+        return this.map[id]();
     }
 
-    private addKorok(id: string,  coord: [number, number, number], type: KorokType,comment?: string): void{
-        this.map[id] = (parser) => ({
-            text: parser.parseStringBlock(id+" "+type),
-            comment: parser.parseStringBlock(comment || ""),
+    private addKorok(id: string,  coord: [number, number, number], type: KorokType, comment?: string): void{
+        this.map[id] = () => ({
+            text: new TypedStringSingle({
+                content: id+" "+type,
+                type: StringType.Npc
+            }),
+            comment: new TypedStringSingle({
+                content: comment || "",
+                type: StringType.Normal
+            }),
             icon: mapKorokToImage(type),
             splitType: SplitType.Korok,
             movements: [{

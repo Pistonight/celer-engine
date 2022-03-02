@@ -1,12 +1,12 @@
 // Shrine::Name
 // 136 shrines 
 import { MapOf } from "data/util";
-import { StringParser } from "../StringParser";
+import { StringType, TypedString, TypedStringSingle } from "..";
 import { RouteAssembly, SplitType } from "../types";
 import { CompilerPresetModule } from "./Module";
 
 class ShrineModule implements CompilerPresetModule {
-    private map: MapOf<(parser: StringParser) => RouteAssembly> = {};
+    private map: MapOf<() => RouteAssembly> = {};
     
     constructor(){
        
@@ -151,11 +151,15 @@ class ShrineModule implements CompilerPresetModule {
 
     }
 
-    public recognizes(name: string): boolean {
-        return name in this.map;
+    public compile(typedString: TypedString): RouteAssembly | undefined {
+        return this.compileName(typedString.toString());
     }
-    public compile(name: string, parser: StringParser): RouteAssembly {
-        return this.map[name](parser);
+
+    public compileName(name: string): RouteAssembly | undefined {
+        if(!(name in this.map)){
+            return undefined;
+        }
+        return this.map[name]();
     }
 
     private addShrine(name: string, coord: [number, number, number]): void {
@@ -180,8 +184,11 @@ class ShrineModule implements CompilerPresetModule {
 
     private addShrineHelper(name: string, icon: string, coord: [number, number, number] = [0,0,0]): void{
         const shrineCompactName = "_Shrine::"+name.replaceAll("'", "").replaceAll(" ", "");
-        this.map[shrineCompactName] = (parser) => ({
-            text: parser.parseStringBlock(name),
+        this.map[shrineCompactName] = () => ({
+            text: new TypedStringSingle({
+                content: name,
+                type: StringType.Location
+            }),
             icon: icon,
             splitType: SplitType.Shrine,
             movements: [{

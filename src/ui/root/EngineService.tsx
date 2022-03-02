@@ -4,10 +4,8 @@ import { RouteEngine } from "core/engine";
 import { exampleRouteScript } from "core/example/routescript";
 import { MapEngine, MapIcon, MapLine } from "core/map";
 import { DocLine, DocLineBanner } from "core/route";
-import { BannerType } from "data/assembly";
-import { Compiler } from "data/assembly/Compiler";
-import { StringType } from "data/assembly/text/type";
-import { RouteScript, TARGET_VERSION } from "data/compile";
+import { BannerType, Compiler, StringType, TypedStringSingle } from "data/assembly";
+import { RouteScript } from "data/compile";
 import { getRouteScriptAsync, getServiceConfig } from "data/service";
 import { EmptyObject } from "data/util";
 import React, { useContext } from "react";
@@ -33,7 +31,15 @@ interface EngineServiceState extends EngineContextState{
 const compiler = new Compiler();
 const routeEngine = new RouteEngine();
 const mapEngine = new MapEngine();
-const placeholderLines = routeEngine.compute(compiler.compile(TARGET_VERSION, ["(==) Loading Route..."]));
+const placeholderLines = [{
+    lineType: "DocLineBanner",
+    bannerType: BannerType.Notes,
+    text: new TypedStringSingle({
+        content: "Loading Route...",
+        type: StringType.Normal
+    }),
+    showTriangle: false
+} as const]
 const placeholderMetadata = {
     Name: "",
     Authors: [],
@@ -68,10 +74,10 @@ export class EngineService extends React.Component<EngineServiceProps, EngineSer
             const errorLines: DocLine[] = [{
                 lineType: "DocLineBanner",
                 bannerType: BannerType.Error,
-                text: {
+                text: new TypedStringSingle({
                     content: config.error,
                     type: StringType.Normal
-                },
+                }),
                 showTriangle: false
             }];
             this.setState({

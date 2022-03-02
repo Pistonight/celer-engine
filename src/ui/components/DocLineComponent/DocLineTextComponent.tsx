@@ -6,7 +6,6 @@ import Icons from "data/image";
 import { MapOf } from "data/util";
 import { gameCoordToMapCoord } from "core/map";
 import { SplitType } from "data/assembly";
-import { isEmptyString } from "data/assembly/text/type";
 
 export interface DocLineTextProps{
     docLine: DocLineText,

@@ -8,7 +8,6 @@ import { addKorok, getMissingKoroks, hasKorok, KorokData, newData } from "./koro
 // import { InstructionPacketWithExtend } from "./creator";
 import { DocLine } from "core/route";
 import { BannerType, RouteAssembly, RouteAssemblySection, SplitType } from "data/assembly/types";
-import { StringType } from "data/assembly/text/type";
 
 //Recharge time in seconds
 const GALE_RECHARGE = 360;
