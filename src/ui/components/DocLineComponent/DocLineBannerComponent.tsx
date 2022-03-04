@@ -33,7 +33,7 @@ export const DocLineBannerComponent: React.FC<DocLineBannerProps> = ({docLine})=
             {showTriangle && <div className={clsx(styles.bannerTriangle, triangleColorStyle)} />}
             <div className={clsx(styles.bannerContainer, showTriangle && styles.bannerContainerWithTriangle, containerColorStyle)}>
                 <p className={clsx(styles.bannerText, showTriangle && styles.bannerTextWithTriangle)} >
-                    <TypedStringComponent content={text} variables={{}} />
+                    <TypedStringComponent content={text} variables={{}} isNotes={false}/>
                 </p>
             </div>
         </div>

@@ -16,6 +16,7 @@ import { Compiler } from "data/assembly/Compiler";
 import { MapEngine } from "core/map";
 import { MapComponent } from "ui/components/MapComponent/MapComponent";
 import { useEngineService } from "ui/root/EngineService";
+import { MapFrame } from "./MapFrame";
 
 
 // const engine = new RouteEngine();
@@ -30,7 +31,7 @@ export interface AppFrameProps  {
 
 };
 export const AppFrame: React.FC<AppFrameProps> = ()=>{
-  const {map, setMap, mapDisplayMode, setMapDisplayMode, theme, setTheme} = useAppRoot();
+  const {mapCore, mapDisplayMode, setMapDisplayMode, theme, setTheme} = useAppRoot();
   const styles = useStyles();
     const [showMenu, setShowMenu] = useState(false);
 
@@ -52,7 +53,7 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
   return (
     <div className={styles.appFrame}>
       
-      <DocFrame docLines={docLines} map={map}/>
+      <DocFrame docLines={docLines} />
 
 
 
@@ -78,9 +79,7 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
                       } } text={"Theme: "} />
                                                             <MenuItemWithValue value={mapDisplayMode.name} action={function (): void {
                           setMapDisplayMode(mapDisplayMode.next());
-                          if(map){
-                            setTimeout(()=>map.invalidateSize(), 400);
-                          }
+                          mapCore.invalidateSize();
                       } } text={"Map Size: "} />
     {/* <hr /> */}
     {/* <MenuItem style={appStyle} text="Split Settings..." action={function (): void {
@@ -116,54 +115,7 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
     </div>
   </div>
 
-      <div className={styles.mapFrame}>
-      <MapContainer style={{height: "100%", backgroundColor:"black"}}center={[0, 0]} zoom={4} crs={L.CRS.Simple} minZoom={3} 
-      attributionControl={false}
-      zoomControl={false}
-  maxZoom={7} maxBounds={new LatLngBounds([-32,-39.0625], [32,39.0625])}
-  whenCreated={(map)=>{
-    setMap(map);
-    setTimeout(()=>{map.invalidateSize()}, 1000);
-    // L.marker([0,0],{
-    //   icon: L.icon({
-    //     iconUrl: TestImage,
-    //     iconSize: [32,32]
-    //   })
-    // } ).addTo(map);
-    // L.marker([-10,10],{
-    //   icon: L.icon({
-    //     iconUrl: TestImage,
-    //     iconSize: [32,32]
-    //   })
-    // } ).addTo(map);
-    // L.polyline([[0,0], [10,10], [-10,10]], {
-    //   color: "red"
-    // }).arrowheads({
-    //   fill: true,
-    //   size: "16px",
-      
-    // }).addTo(map);
-    // L.polyline([[-10,10], [20,-30], [0,10]]).arrowheads({
-    //   fill: true,
-    //   size: "16px"
-    // }).addTo(map);
-    
-    }}>
-      
-  <TileLayer
-    noWrap
-    tileSize={256}
-    errorTileUrl="celer/tiles/empty.png"
-    url="celer/tiles/{z}/{x}_{y}.png"
-  />
-    {/* <Marker position={[0,0]}>
-    <Popup>
-      A pretty CSS3 popup. <br /> Easily customizable.
-    </Popup>
-  </Marker> */}
-  </MapContainer>
-      </div>
-      <MapComponent map={map} icons={mapIcons} lines={mapLines}></MapComponent>
+      <MapFrame />
       
       {/* <div style={{position: "fixed", backgroundColor: "rgba(0,0,0,0.5)", width: "100vw", height: "100vh", zIndex:99999}}>
       <div style={{margin: "calc( ( 100vw - 30em ) / 2 )", height: "100%"}}>

@@ -27,6 +27,7 @@ class WarpModule implements CompilerPresetModule {
                 module.movements[0].isWarp = true;
             }
         }else{
+            
             switch(location){
                 case "_TechLab::Hateno":
                     module = {
@@ -58,34 +59,96 @@ class WarpModule implements CompilerPresetModule {
                         }]
                     };
                     break;
+                case "_VahMedoh":
+                    module = {
+                        text: new TypedStringSingle({
+                            content: "Vah Medoh",
+                            type: StringType.Location,
+                        }),
+                        icon: "warp",
+                        splitType: SplitType.Warp,
+                        movements: [{
+                            to: {x: -3614.10, z: -1862.06},
+                            isAway: false,
+                            isWarp: true,
+                        }]
+                    };
+                    break;
+                case "_VahNaboris":
+                    module = {
+                        text: new TypedStringSingle({
+                            content: "Vah Naboris",
+                            type: StringType.Location,
+                        }),
+                        icon: "warp",
+                        splitType: SplitType.Warp,
+                        movements: [{
+                            to: {x: -2110.15, z: 2616.95},
+                            isAway: false,
+                            isWarp: true,
+                        }]
+                    };
+                    break;
+                case "_VahRudania":
+                    module = {
+                        text: new TypedStringSingle({
+                            content: "Vah Rudania",
+                            type: StringType.Location,
+                        }),
+                        icon: "warp",
+                        splitType: SplitType.Warp,
+                        movements: [{
+                            to: {x: 2451.85, z: -2559.08},
+                            isAway: false,
+                            isWarp: true,
+                        }]
+                    };
+                    break;
+                case "_VahRuta":
+                    module = {
+                        text: new TypedStringSingle({
+                            content: "Vah Ruta",
+                            type: StringType.Location,
+                        }),
+                        icon: "warp",
+                        splitType: SplitType.Warp,
+                        movements: [{
+                            to: {x: 3662.40, z: -175.42},
+                            isAway: false,
+                            isWarp: true,
+                        }]
+                    };
+                    break;
             }
-            if(!module && location.startsWith(PREFIX) && location.endsWith(SUFFIX)){
-                const coords = location.substring(PREFIX.length, name.length-SUFFIX.length);
-                const parts = coords.split(",");
-                const x = Number(parts[0]);
-                const z = Number(parts[1]);
-                module = {
-                    text: new TypedStringSingle({
-                        content: "Travel Medallion",
-                        type: StringType.Location,
-                    }),
-                    icon: "warp",
-                    splitType: SplitType.Warp,
-                    movements: [{
-                        to: {x, z},
-                        isAway: false,
-                        isWarp: true,
-                    }]
-                };
-            }else{
-                module = {
-                    text: new TypedStringSingle({
-                        content: "Travel Invalid Warp",
-                        type: StringType.Normal,
-                    }),
-                    bannerType: BannerType.Error,
-                    splitType: SplitType.None
-                } as RouteAssembly;
+            if(!module){
+                if(location.startsWith(PREFIX) && location.endsWith(SUFFIX)){
+                    const coords = location.substring(PREFIX.length, location.length-SUFFIX.length);
+                    const parts = coords.split(",");
+                    const x = Number(parts[0]) || 0;
+                    const z = Number(parts[1]) || 0;
+                    module = {
+                        text: new TypedStringSingle({
+                            content: "Travel Medallion",
+                            type: StringType.Location,
+                        }),
+                        icon: "warp",
+                        splitType: SplitType.Warp,
+                        movements: [{
+                            to: {x, z},
+                            isAway: false,
+                            isWarp: true,
+                        }]
+                    };
+                }else{
+                    module = {
+                        text: new TypedStringSingle({
+                            content: "Invalid Warp: "+ name,
+                            type: StringType.Normal,
+                        }),
+                        bannerType: BannerType.Error,
+                        splitType: SplitType.None
+                    } as RouteAssembly;
+                }
             }
         }
 

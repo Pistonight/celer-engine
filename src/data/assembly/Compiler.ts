@@ -95,7 +95,7 @@ export class Compiler {
     private compileStepString(stepString: string): RouteAssembly{
         const { header, typedString } = StringParser.parseStringBlock(stepString);
 
-        if (header.bannerType){
+        if (header.bannerType !== undefined){
             return {
                 text: typedString,
                 bannerTriangle: header.bannerTriangle,

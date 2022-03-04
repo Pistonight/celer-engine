@@ -4,12 +4,11 @@ import { DocLineSectionComponent } from "./DocLineSectionComponent";
 import { DocLineTextComponent, DocLineTextWithIconComponent } from "./DocLineTextComponent";
 export interface DocLineProps{
     docLine: DocLine,
-    map?: L.Map,
     altLineColor?: boolean,
     altNotesColor?: boolean,
 }
 
-export const DocLineComponent: React.FC<DocLineProps> = ({map, docLine, altLineColor, altNotesColor})=> {
+export const DocLineComponent: React.FC<DocLineProps> = ({docLine, altLineColor, altNotesColor})=> {
     const lineType = docLine.lineType;
     switch(lineType){
         case "DocLineSection":
@@ -17,8 +16,8 @@ export const DocLineComponent: React.FC<DocLineProps> = ({map, docLine, altLineC
         case "DocLineBanner":
             return <DocLineBannerComponent docLine={docLine} />;
         case "DocLineText":
-            return <DocLineTextComponent map={map} docLine={docLine} altLineColor={altLineColor} altNotesColor={altNotesColor}/>;
+            return <DocLineTextComponent docLine={docLine} altLineColor={altLineColor} altNotesColor={altNotesColor}/>;
         case "DocLineTextWithIcon":
-            return <DocLineTextWithIconComponent map={map} docLine={docLine} altLineColor={altLineColor} altNotesColor={altNotesColor}/>;
+            return <DocLineTextWithIconComponent docLine={docLine} altLineColor={altLineColor} altNotesColor={altNotesColor}/>;
     }
 };

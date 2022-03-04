@@ -33,5 +33,7 @@ class SimpleModule implements CompilerPresetModule {
 export const getSimpleModules = ()=>([
     new SimpleModule("_Chest<", ">", StringType.Item, "chest"),
     new SimpleModule("_Chest::Special<", ">", StringType.Item, "chest-special"),
-    new SimpleModule("_Equipment<", ">", StringType.Item, "equipment")
+    new SimpleModule("_Equipment::Weapon<", ">", StringType.Item, "equipment"),
+    new SimpleModule("_Equipment::Bow<", ">", StringType.Item, "bow"),
+    new SimpleModule("_Equipment::Shield<", ">", StringType.Item, "shield")
 ]);

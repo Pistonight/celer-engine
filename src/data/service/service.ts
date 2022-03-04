@@ -1,6 +1,8 @@
-import { RouteScript } from "data/compile";
+import { RouteScript, TARGET_VERSION } from "data/compile";
 import queryString from "query-string";
 import axios from "axios";
+import { BannerType, TypedStringSingle, StringType } from "data/assembly";
+import { config } from "process";
 
 export interface ServiceConfig {
     scriptUrl?: string,
@@ -59,8 +61,24 @@ export const getServiceConfig = ():ServiceConfig => {
 }
 
 export const getRouteScriptAsync = async (url: string): Promise<RouteScript> => {
-    const response = await axios.get(url);
-    //console.log(response);
+    try{
+        const response = await axios.get(url);
+        return response.data;
+    }catch(e){
+        console.error(e);
+        return {
+            Project: {
+                Name: "",
+                Authors: [],
+                Url: "",
+                Version: "Unknown",
+                Description: ""
+            },
+            compilerVersion: TARGET_VERSION,
+            Route: [
+                "(!=) A network error occured when trying to load the route"
+            ]
+        }
+    }
 
-    return response.data;
 }

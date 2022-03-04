@@ -1,3 +1,4 @@
+import { MapCore } from "core/map";
 import { MapDisplayMode, MapDisplayModes, MapDisplayModeStorage, Theme, Themes, ThemeStorage } from "data/settings";
 import { Consumer, EmptyObject } from "data/util";
 import React, { useContext } from "react";
@@ -17,8 +18,7 @@ type AppRootContextState = {
     theme: Theme,
     setTheme: Consumer<Theme>,
 
-    map?: L.Map,
-    setMap: Consumer<L.Map>
+    mapCore: MapCore,
 }
 
 interface AppRootProps {}
@@ -26,13 +26,14 @@ interface AppRootProps {}
 interface AppRootState {
     mapDisplayMode: MapDisplayMode,
     theme: Theme,
-    map?: L.Map,
+    mapCore: MapCore,
 }
 
 
 const initialState: AppRootState ={
     mapDisplayMode: MapDisplayModeStorage.load(),
-    theme: ThemeStorage.load()
+    theme: ThemeStorage.load(),
+    mapCore: new MapCore()
 };
 
 const AppRootContext = React.createContext<AppRootContextState>(EmptyObject());
@@ -63,14 +64,13 @@ export class AppRoot extends React.Component<AppRootProps, AppRootState> {
 
         return <AppRootContext.Provider value={{
             mapDisplayMode: this.state.mapDisplayMode,
-            map: this.state.map,
+            mapCore: this.state.mapCore,
             theme: this.state.theme,
             setMapDisplayMode: this.setMapDisplayMode.bind(this),
-            setMap: (map)=>this.setState({map}),
             setTheme: this.setTheme.bind(this),
         }}>
             <StyleProvider mapDisplayMode={this.state.mapDisplayMode} appColors={appColors}>
-                <EngineService>
+                <EngineService mapCore={this.state.mapCore}>
                     {this.props.children}
                 </EngineService>
             </StyleProvider>

@@ -1,8 +1,9 @@
 // The EngineService component retrieves route data and send it to the children via context
 
 import { RouteEngine } from "core/engine";
+import { exampleRouteScriptPresets } from "core/example";
 import { exampleRouteScript } from "core/example/routescript";
-import { MapEngine, MapIcon, MapLine } from "core/map";
+import { MapCore, MapEngine, MapIcon, MapLine } from "core/map";
 import { DocLine, DocLineBanner } from "core/route";
 import { BannerType, Compiler, StringType, TypedStringSingle } from "data/assembly";
 import { RouteScript } from "data/compile";
@@ -20,7 +21,7 @@ interface EngineContextState {
 const EngineContext = React.createContext<EngineContextState>(EmptyObject());
 
 interface EngineServiceProps {
-
+    mapCore: MapCore,
 }
 
 interface EngineServiceState extends EngineContextState{
@@ -109,6 +110,9 @@ export class EngineService extends React.Component<EngineServiceProps, EngineSer
                 const routeScript = exampleRouteScript as unknown as RouteScript;
                 this.setRouteScript(routeScript);
                 return;
+            case "Presets":
+                this.setRouteScript(exampleRouteScriptPresets as unknown as RouteScript);
+                return;
         }
     }
 
@@ -135,6 +139,8 @@ export class EngineService extends React.Component<EngineServiceProps, EngineSer
         if(metadata.Name){
             document.title = `${metadata.Name} - Celer`;
         }
+        this.props.mapCore.setIcons(mapIcons);
+        this.props.mapCore.setLines(mapLines);
     }
 
     public render(): JSX.Element {

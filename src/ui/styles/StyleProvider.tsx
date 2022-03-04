@@ -3,7 +3,7 @@ import { MapDisplayMode } from "data/settings";
 import { EmptyObject } from "data/util";
 import React, { useContext, useEffect, useState } from "react";
 import { deprecatedStyles } from "styles/deprecated";
-import { DocLineSectionComponentStyle, DocLineBannerComponentStyle, DocLineTextComponentStyle } from "ui/components";
+import { DocLineSectionComponentStyle, DocLineBannerComponentStyle, DocLineTextComponentStyle, TypedStringComponentStyle } from "ui/components";
 import { DocFrameStyle } from "ui/frames/DocFrame.Style";
 import { Sizes, AppColors, MergedClassNameMapOf } from "./constants";
 import { StyleEngine } from "./StyleEngine";
@@ -16,6 +16,7 @@ const AllStyles = [
     DocLineBannerComponentStyle,
     DocLineTextComponentStyle,
     DocFrameStyle,
+    TypedStringComponentStyle,
     deprecatedStyles
 ];
 

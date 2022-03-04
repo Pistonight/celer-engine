@@ -5,17 +5,6 @@ import React, { useContext } from "react";
 import { StyleMap, AppColors, AppSizes, AppSizesWithMap, ComputedStyle, ComputeStyle, ComputeStyleInputs, FullRouteSizeThreshold, MediumRouteSizeThreshold, MergedClassNameMapOf, MergedStyleMapOf, RouteDocMode, StyleObject } from "./constants";
 import { MenuItemStyle } from "../../components/MenuItem/MenuItem.Style";
 
-
-
-// export type AppClassNames = MergedClassNameMapOf<AppComputeStyleFunctions>;
-// export type AppStyleMap = MergedStyleMapOf<AppComputeStyleFunctions>;
-// export type AppStyle =  MergedClassNameMapOf<AppComputeStyleFunctions> & {
-//     sizes: AppSizesWithMap,
-//     docMode: RouteDocMode
-// };
-
-
-
 // Object responsible for computing CSS string from input styles
 export class StyleEngine<CSArray extends Array<ComputeStyle<StyleMap>>> {
     // Input style compute functions

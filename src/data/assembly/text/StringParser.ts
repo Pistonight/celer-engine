@@ -3,7 +3,19 @@ import { BannerType } from "..";
 import { TypedString, StringType } from "./TypedString";
 
 const FuncMap = {
-    "item": StringType.Item
+    "item": StringType.Item,
+    "loc": StringType.Location,
+    "npc": StringType.Npc,
+    "rune": StringType.Rune,
+    "boss": StringType.Boss,
+    "enemy": StringType.Enemy,
+    "dir": StringType.Direction,
+    "link": StringType.Link,
+    "v": StringType.Variable,
+    "!!": StringType.Important,
+    "gale": StringType.Gale,
+    "fury": StringType.Fury,
+    "code": StringType.Code
 };
 
 
@@ -21,12 +33,6 @@ class StringParser {
 
     public parseStringBlock(str: string): StringParseData {
         const [ content, header ] = this.parseStringHeader(str);
-        if(header.bannerType){
-            return {
-                header,
-                typedString: this.convertToTypedString(content)
-            };
-        }
 
         const typedString = this.parseStringFunctions(content);
         return {
@@ -100,15 +106,37 @@ class StringParser {
         if(str !== ""){
             tokens.push(str);
         }
-        
 
         const typeStack: StringType[] = [];
         const blocks: TypedString[] = [];
         let currentType = StringType.Normal;
+        let escaping = false;
         for(let i = 0; i<tokens.length;i++){
             const token = tokens[i];
-            //Need at least 3 more tokens to process a function: . name ( )
-            if(token === "." && i<tokens.length-3 && tokens[i+2] === "("){
+            
+            
+            if(token === "." && i<tokens.length-1 && tokens[i+1] === "("){
+                // .( for escaping ..)
+                if(escaping){
+                    blocks.push(new TypedStringSingle({type: currentType, content: token}));
+                    continue;
+                }
+                escaping = true;
+                i = i + 1;
+            }else if(token === "." && i<tokens.length-2 && tokens[i+1] === "." && tokens[i+2] === ")"){
+                //  ..) to end escaping
+                if(!escaping){
+                    blocks.push(new TypedStringSingle({type: currentType, content: token}));
+                    continue;
+                }
+                escaping = false;
+                i = i + 2;
+            }else if(token === "." && i<tokens.length-3 && tokens[i+2] === "("){
+                //Need at least 3 more tokens to process a function: . name ( )
+                if(escaping){
+                    blocks.push(new TypedStringSingle({type: currentType, content: token}));
+                    continue;
+                }
                 const funcName = tokens[i+1];
                 if(funcName in FuncMap){
                     const type = FuncMap[funcName as keyof typeof FuncMap];
@@ -117,8 +145,12 @@ class StringParser {
                 }else{
                     blocks.push(new TypedStringSingle({type: currentType, content: `.${funcName}(`}));
                 }
-                i = i+2;
+                i = i + 2;
             }else if(token === ")"){
+                if(escaping){
+                    blocks.push(new TypedStringSingle({type: currentType, content: token}));
+                    continue;
+                }
                 if(typeStack.length > 0){
                     currentType = typeStack.pop()!;
                 }else{

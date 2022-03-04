@@ -177,6 +177,33 @@ export interface AppColors {
 
     docLineBackground: string;
     docLineBackgroundAlt: string;
+
+    stringItemColor: string;
+    stringLocationColor: string;
+    stringNpcColor: string;
+    stringRuneColor: string;
+    stringBossColor: string;
+    stringEnemyColor: string;
+    stringDirectionColor: string;
+    stringLinkColor: string;
+    stringVariableColor: string;
+    stringImportantColor: string;
+    stringGaleColor: string;
+    stringFuryColor: string;
+
+    stringItemColorNotes: string;
+    stringLocationColorNotes: string;
+    stringNpcColorNotes: string;
+    stringRuneColorNotes: string;
+    stringBossColorNotes: string;
+    stringEnemyColorNotes: string;
+    stringDirectionColorNotes: string;
+    stringLinkColorNotes: string;
+    stringVariableColorNotes: string;
+    stringImportantColorNotes: string;
+    stringGaleColorNotes: string;
+    stringFuryColorNotes: string;
+    
 }
 
 

@@ -77,7 +77,33 @@ export const DefaultColors: AppColors = {
     docNotesBackgroundAlt: "#ffcc33",
     docNotesColorAlt: "inherit",
     docLineBackground: "#ffffff",
-    docLineBackgroundAlt: "#eeeeee"
+    docLineBackgroundAlt: "#eeeeee",
+
+    stringItemColor: "#ffff00",
+    stringLocationColor: "#00ffff",
+    stringNpcColor: "#00ff00",
+    stringRuneColor: "#ff8800",
+    stringBossColor: "#ff8800",
+    stringEnemyColor: "#00ffff",
+    stringDirectionColor: "#ffff00",
+    stringLinkColor: "inherit",
+    stringVariableColor: "#ffc0cb",
+    stringImportantColor: "#ff00ff",
+    stringGaleColor: "#00ff00",
+    stringFuryColor: "#ff8800",
+
+    stringItemColorNotes: "#ffff00",
+    stringLocationColorNotes: "#00ffff",
+    stringNpcColorNotes: "#00ff00",
+    stringRuneColorNotes: "#ff8800",
+    stringBossColorNotes: "#ff8800",
+    stringEnemyColorNotes: "#00ffff",
+    stringDirectionColorNotes: "#ffff00",
+    stringLinkColorNotes: "inherit",
+    stringVariableColorNotes: "#880000",
+    stringImportantColorNotes: "#ff00ff",
+    stringGaleColorNotes: "#00ff00",
+    stringFuryColorNotes: "#ff8800",
 }
 
 export const GranatusColors: AppColors = {
@@ -159,7 +185,33 @@ export const GranatusColors: AppColors = {
     docNotesBackgroundAlt: "#eeeeee",
     docNotesColorAlt: "inherit",
     docLineBackground: "#ffffff",
-    docLineBackgroundAlt: "#ffffff"
+    docLineBackgroundAlt: "#ffffff",
+
+    stringItemColor: "inherit",
+    stringLocationColor: "inherit",
+    stringNpcColor: "inherit",
+    stringRuneColor: "inherit",
+    stringBossColor: "inherit",
+    stringEnemyColor: "inherit",
+    stringDirectionColor: "inherit",
+    stringLinkColor: "inherit",
+    stringVariableColor: "inherit",
+    stringImportantColor: "inherit",
+    stringGaleColor: "#00ff00",
+    stringFuryColor: "#ff8800",
+
+    stringItemColorNotes: "inherit",
+    stringLocationColorNotes: "inherit",
+    stringNpcColorNotes: "inherit",
+    stringRuneColorNotes: "inherit",
+    stringBossColorNotes: "inherit",
+    stringEnemyColorNotes: "inherit",
+    stringDirectionColorNotes: "inherit",
+    stringLinkColorNotes: "inherit",
+    stringVariableColorNotes: "inherit",
+    stringImportantColorNotes: "inherit",
+    stringGaleColorNotes: "#00ff00",
+    stringFuryColorNotes: "#ff8800",
 }
 
 export const ThemeColorMap: ReadonlyMapOf<AppColors> = {
