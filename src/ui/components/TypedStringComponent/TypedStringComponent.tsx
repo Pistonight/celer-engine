@@ -29,7 +29,7 @@ const TypeStringRender: React.FC<TypedStringRenderProps> = ({isNotes, content, t
     if(type === StringType.Variable){
         return (
             <span className={isNotes ? styles.stringVariableColorNotes : styles.stringVariableColor}>
-                {variables[content]}
+                {variables[content] || 0}
             </span>
         );
     }

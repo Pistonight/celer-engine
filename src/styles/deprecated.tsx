@@ -1,43 +1,10 @@
 import { ComputeStyleInputs } from "ui/styles";
-import { MenuItemStyle } from "../components/MenuItem/MenuItem.Style";
 
 export const deprecatedStyles = ({sizes, colors}: ComputeStyleInputs) => {
-    //route doc effective area:
-    //760px : hide line number, collapse notes to single line
-    //hidden map: 760px
-    //narrow map: 760/0.7 = 1085
-    //half map: 760/0.5 = 1520
-    //wide map: 760/0.4 = 1900
-    //
-    //500px : notes only show ..., auto = banner style notes
-    //hidden map: 500px
-    //narrow map: 500/0.7 = 714
-    //half map: 500/0.5 = 1000
-    //wide map: 500/0.4 = 1250
-
-
-
-    //map
-    //auto: wide if possible, then half, then narrow, while route doc still >760px.
-    //wide if >1900 (full route doc, wide map)
-    //half if >1520 (full route doc, half map)
-    //narrow if >1085 (full route doc, narrow map)
-    //narrow if >714 (mid route doc, narrow map)
-    //hidden if <714 (mid route doc, no map)
-    //then shrink route doc until 500px
-    //if narrow map cannot keep route doc >=500px, hide map
     
     return {
         appFrame: {
             fontSize: sizes.font,
-        },
-        mapFrame: {
-            display: sizes.map === "0px" ? "none" : "block",
-            width: sizes.map,
-            height:"100vh", 
-            float: "right" ,
-            boxSizing:"border-box",
-            overflow:"hidden"
         },
         statusBarFrame:{
             position: "fixed", 
@@ -96,16 +63,5 @@ export const deprecatedStyles = ({sizes, colors}: ComputeStyleInputs) => {
         }
     } as const;
 }
-
-// export const getStyleComponentAndClass = (style: AppStyle, color: AppColors): [JSX.Element, AppClassNames]=>{
-//     const computedStyle = computeAppStyles(style, color);
-//     const [classNames, styleString] = mergeStyleClass(computedStyle);
-
-//     const Styles = <Helmet>
-//         <style>{styleString}</style>
-//     </Helmet>;
-//     return [Styles, classNames];
-// }
-
 
 

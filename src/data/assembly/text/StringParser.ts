@@ -91,7 +91,7 @@ class StringParser {
 
         // Tokenize first
         const tokens: string[] = [];
-        const regex = /[\.\(\)]/;
+        const regex = /[.()]/;
         let j = str.search(regex);
         while(j !== -1){
             if(j!==0){

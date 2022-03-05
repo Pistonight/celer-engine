@@ -4,18 +4,19 @@ import { EmptyObject } from "data/util";
 import React, { useContext, useEffect, useState } from "react";
 import { deprecatedStyles } from "styles/deprecated";
 import { DocLineSectionComponentStyle, DocLineBannerComponentStyle, DocLineTextComponentStyle, TypedStringComponentStyle } from "ui/components";
-import { DocFrameStyle } from "ui/frames/DocFrame.Style";
+import { DocFrameStyle, MapFrameStyle } from "ui/frames";
 import { Sizes, AppColors, MergedClassNameMapOf } from "./constants";
 import { StyleEngine } from "./StyleEngine";
 
 
 //Styles
 const AllStyles = [
+    DocFrameStyle,
+    MapFrameStyle,
     MenuItemStyle,
     DocLineSectionComponentStyle,
     DocLineBannerComponentStyle,
     DocLineTextComponentStyle,
-    DocFrameStyle,
     TypedStringComponentStyle,
     deprecatedStyles
 ];

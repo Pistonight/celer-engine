@@ -167,7 +167,7 @@ class ShrineModule implements CompilerPresetModule {
     }
 
     private addBlessing(name: string, coord: [number, number, number]): void {
-        this.addShrineHelper(name, "chest", coord);
+        this.addShrineHelper(name, "shrine-blessing", coord);
     }
 
     private addSmallSword(name: string, coord: [number, number, number]): void {

@@ -1,4 +1,5 @@
 import { MapOf } from "data/util";
+import { LocalStorageWrapper } from "./LocalStorageWrapper";
 
 export interface SettingItem<T> {
     // Name of the setting to be displayed
@@ -7,7 +8,7 @@ export interface SettingItem<T> {
     next: ()=>T
 }
 
-
+const withSettingPrefix = (key: string)=>"Setting."+key;
 
 export class SettingStorage<T extends SettingItem<T>>{
     private key: string;
@@ -20,19 +21,17 @@ export class SettingStorage<T extends SettingItem<T>>{
         this.defaultItem = defaultItem;
     }
     public save(item: T) {
-        localStorage.setItem(this.key, item.name);
+        LocalStorageWrapper.store(withSettingPrefix(this.key), item.name);
     }
     public load(): T {
-        const name = localStorage.getItem(this.key);
-        if(!name){
-            return this.defaultItem;
-        }
-        const values = Object.values(this.map) as T[];
+        return LocalStorageWrapper.load(withSettingPrefix(this.key), this.defaultItem, (name)=>{
+            const values = Object.values(this.map) as T[];
             for(let i =0;i<values.length;i++){
-            if (values[i].name == name){
-                return values[i];
+                if (values[i].name === name){
+                    return values[i];
+                }
             }
-        }
-        return this.defaultItem;
+            return this.defaultItem;
+        });
     }
 }

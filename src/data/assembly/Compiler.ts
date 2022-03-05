@@ -153,6 +153,17 @@ export class Compiler {
         if(extend["line-color"]){
             data.lineColor = extend["line-color"];
         }
+        if(extend["hide-icon-on-map"]){
+            data.hideIconOnMap = extend["hide-icon-on-map"];
+        }
+        if(extend["split-type"]){
+            const customSplitTypeString = extend["split-type"];
+            data.splitType = SplitType.None;
+            // Make sure split type is valid using typescript enum mapping
+            if(SplitType[SplitType[customSplitTypeString as keyof typeof SplitType]] === customSplitTypeString){
+                data.splitType = SplitType[customSplitTypeString as keyof typeof SplitType];
+            }
+        }
         if(extend.movements && Array.isArray(extend.movements)){
             const movements = extend.movements.map(this.processExtendMovement.bind(this)).filter(m=>m);
             data.movements = movements as Movement[];

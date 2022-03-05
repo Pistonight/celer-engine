@@ -1,5 +1,5 @@
 import { Coord, SplitType } from "data/assembly";
-import L, { map } from "leaflet";
+import L from "leaflet";
 import { gameCoordToMapCoord } from "./convert";
 import { MapIcon, MapLine } from "./MapEngine";
 import Icons from "data/image";

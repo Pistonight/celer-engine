@@ -55,19 +55,6 @@ export enum BossType {
 	Molduga
 }
 
-enum BossTypeExtended {
-	None,
-	RedHinox,
-	BlueHinox,
-	BlackHinox,
-	StoneTalus,
-	LuminousTalus,
-	RareTalus,
-	IgneoTalus,
-	FrostTalus,
-	Molduga
-}
-
 // export type InstructionLike = TextLike | InstructionPacket | undefined;
 
 // export type InstructionData = {

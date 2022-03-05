@@ -57,6 +57,14 @@ export const exampleRouteScript = {
         ]
       },
       {
-        "section": [123,456,"something"]
+        "section": [123,456,"something",
+        {
+          "custom":{
+            "text": "test",
+            "icon": "shop",
+            "split-type": "UserDefined"
+          }
+        }
+      ]
       }
     ]};

@@ -5,6 +5,54 @@ import { StringType, TypedString, TypedStringSingle } from "../text";
 import { RouteAssembly, SplitType } from "../types";
 import { CompilerPresetModule } from "./Module";
 
+export enum KorokType {
+    Acorn = "Acorn",
+    AcornFlying = "Acorn Flying",
+    AcornLog = "Acorn in Log",
+    AcornTree = "Acorn in Tree",
+    AcornHanging = "Acorn Hanging",
+    Balloon = "Balloon",
+    Basketball = "Basketball",
+    Beard = "Horse Beard",
+    BlockPuzzle = "Block Puzzle",
+    BoulderCircle = "Boulder Circle",
+	BoulderGolf = "Boulder Golf",
+	Confetti = "Confetti",
+	FlowerChase = "Flower Chase",
+	FlowerCount = "Flower Count",
+    IceBlock = "Ice Block",
+    JumpFence = "Jump Fence",
+    LiftRock = "Lift Rock",
+    LiftRockDoor = "Rock under Door",
+    LiftRockTree = "Rock in Tree",
+    LiftRockRubble = "Rock behind Rubble",
+    LiftRockBoulder = "Rock under Boulder",
+    LiftRockLeaves = "Rock under Leaves",
+    LiftRockSlab = "Rock under Slab",
+    LightChase = "Light Chase",
+    LilyPads = "Lily Pads",
+    LuminousStone = "Luminous Stone",
+    MatchTree = "Match Tree",
+    MatchCactus = "Match Cactus",
+    MetalBoxCircle = "Metal Box Circle",  
+    OfferApple = "Offer Apple",
+    OfferBanana = "Offer Banana",
+    OfferDurian = "Offer Durian",
+    OfferEgg = "Offer Egg",
+    OfferPalmFruit = "Offer Palm Fruit",
+    OfferPepper = "Offer Pepper",
+    OfferShield = "Offer Shield",
+    Race = "Race",
+    RockCircle = "Rock Circle",
+    ShootEmblem = "Shoot Emblem",
+    SnowballGolf = "Snowball Golf",
+    Torch = "Match Torch",
+    TreeBranch = "Tree Branch",
+    TreeStump = "Tree Stump",
+    Well = "Well",
+    Other = "Other"
+}
+
 class KorokModule implements CompilerPresetModule {
     private map: MapOf<() => RouteAssembly> = {};
     
@@ -948,54 +996,6 @@ class KorokModule implements CompilerPresetModule {
         });
     }
 
-}
-
-export enum KorokType {
-    Acorn = "Acorn",
-    AcornFlying = "Acorn Flying",
-    AcornLog = "Acorn in Log",
-    AcornTree = "Acorn in Tree",
-    AcornHanging = "Acorn Hanging",
-    Balloon = "Balloon",
-    Basketball = "Basketball",
-    Beard = "Horse Beard",
-    BlockPuzzle = "Block Puzzle",
-    BoulderCircle = "Boulder Circle",
-	BoulderGolf = "Boulder Golf",
-	Confetti = "Confetti",
-	FlowerChase = "Flower Chase",
-	FlowerCount = "Flower Count",
-    IceBlock = "Ice Block",
-    JumpFence = "Jump Fence",
-    LiftRock = "Lift Rock",
-    LiftRockDoor = "Rock under Door",
-    LiftRockTree = "Rock in Tree",
-    LiftRockRubble = "Rock behind Rubble",
-    LiftRockBoulder = "Rock under Boulder",
-    LiftRockLeaves = "Rock under Leaves",
-    LiftRockSlab = "Rock under Slab",
-    LightChase = "Light Chase",
-    LilyPads = "Lily Pads",
-    LuminousStone = "Luminous Stone",
-    MatchTree = "Match Tree",
-    MatchCactus = "Match Cactus",
-    MetalBoxCircle = "Metal Box Circle",  
-    OfferApple = "Offer Apple",
-    OfferBanana = "Offer Banana",
-    OfferDurian = "Offer Durian",
-    OfferEgg = "Offer Egg",
-    OfferPalmFruit = "Offer Palm Fruit",
-    OfferPepper = "Offer Pepper",
-    OfferShield = "Offer Shield",
-    Race = "Race",
-    RockCircle = "Rock Circle",
-    ShootEmblem = "Shoot Emblem",
-    SnowballGolf = "Snowball Golf",
-    Torch = "Match Torch",
-    TreeBranch = "Tree Branch",
-    TreeStump = "Tree Stump",
-    Well = "Well",
-    Other = "Other"
 }
 
 const mapKorokToImage = (korok: KorokType):string =>{

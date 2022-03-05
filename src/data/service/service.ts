@@ -27,9 +27,8 @@ export const getServiceConfig = ():ServiceConfig => {
 
     // internal mode: engine will load internal example route
     if(parsedQueryString["Internal"]){
-
         return {
-            id: getStringConfig(id) ?? "RouteScript"
+            id: getStringConfig(id) ?? getStringConfig(parsedQueryString["Internal"]) ?? "RouteScript"
         };
     }
     // dev mode: load from local

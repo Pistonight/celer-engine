@@ -16,101 +16,6 @@ export {};// import { wbex } from "./windbomb";
 // 	return instructionWithExtend;
 // };
 
-// export const Section = (title: string): InstructionPacket =>{
-// 	return {
-// 		text: stringToText(title),
-// 		type: "section"
-// 	};
-// };
-
-// export const Tower = (text: TextLike, comment?: TextLike): InstructionPacketWithExtend => {
-// 	return addExtend({
-// 		icon: "tower",
-// 		text: lcn(text),
-// 		comment,
-// 		type: SPLIT,
-// 		splitPrefix: "-",
-// 	});
-// };
-
-// export const Shrine = (text: TextLike): InstructionPacketWithExtend => {
-// 	return addExtend({
-// 		icon: "shrine",
-// 		text: lcn(text),
-// 		shrineChange: 1,
-// 		type: SPLIT,
-// 		splitPrefix: "-",
-// 		timeOverride: 10,
-// 	});
-// };
-
-// export const ShrineBlessing = (text: TextLike): InstructionPacketWithExtend => {
-// 	return addExtend({
-// 		icon: "chest",
-// 		text: lcn(text),
-// 		shrineChange: 1,
-// 		type: SPLIT,
-// 		splitPrefix: "-",
-// 		timeOverride: 4
-// 	});
-// };
-
-// export const ShrineSword = (text: TextLike): InstructionPacketWithExtend => {
-// 	return addExtend({
-// 		icon: "shrine-sword",
-// 		text: lcn(text),
-// 		shrineChange: 1,
-// 		type: SPLIT,
-// 		splitPrefix: "-",
-// 		timeOverride: 20
-// 	});
-// };
-
-// export const ShrineDoubleSword = (text: TextLike): InstructionPacketWithExtend => {
-// 	return addExtend({
-// 		icon: "shrine-double-sword",
-// 		text: lcn(text),
-// 		shrineChange: 1,
-// 		type: SPLIT,
-// 		splitPrefix: "-",
-// 		timeOverride: 20
-// 	});
-// };
-
-// export const ShrineDLC = (text: TextLike): InstructionPacketWithExtend => {
-// 	return addExtend({
-// 		icon: "shrine-dlc",
-// 		text: lcn("EX ", text),
-// 		comment: txt("Check ", v("krk"), " Koroks"),
-// 		type: SPLIT,
-// 		splitPrefix: "-",
-// 		timeOverride: 10,
-// 	});
-// };
-
-// export const Warp = (text: TextLike): InstructionPacketWithExtend => {
-// 	return addExtend({
-// 		icon: "warp",
-// 		text: lcn(text),
-// 		comment: txt("Check ", v("krk"), " Koroks"),
-// 		type: SPLIT,
-// 		splitPrefix: "-",
-// 	});
-// };
-
-// export const Korok = (id: string, type: string, comment?: TextLike): InstructionPacketWithExtend => {
-// 	return addExtend({
-// 		icon: mapKorokToImage(type),
-// 		text: npc(id+" ", type),
-// 		comment,
-// 		korokChange: 1,
-// 		korokCode: id,
-// 		timeOverride: mapKorokToEstimate(type)
-// 	});
-// };
-
-
-
 // const mapKorokToEstimate = (korok: string):number =>{
 // 	switch(korok){
 // 		case "Acorn": return 5;
@@ -336,21 +241,5 @@ export {};// import { wbex } from "./windbomb";
 // 	});
 // };
 
-// export const memoryLocationToName = (location: string): string => {
-// 	switch(location) {
-// 		case "Lanayru Road": return "Return of Calamity Ganon";
-// 		case "Sacred Grounds": return "Subdued Ceremony";
-// 		case "Lake Kolomo": return "Resolve and Grief";
-// 		case "Ancient Columns": return "Zelda's Resentment";
-// 		case "Kara Kara Bazaar": return "Blades of the Yiga";
-// 		case "Eldin Canyon": return "A Premonition";
-// 		case "Irch Plain": return "Silent Princess";
-// 		case "West Necluda": return "Shelter from the Storm";
-// 		case "Hyrule Castle": return "Father and Daughter";
-// 		case "Spring of Power": return "Slumbering Power";
-// 		case "Sanidin Park": return "To Mount Lanayru";
-// 		case "Hyrule Field": return "Despair";
-// 		case "Ash Swamp": return "Zelda's Awakening";
-// 		default: return "Unknown Memory";
-// 	}
+
 // };

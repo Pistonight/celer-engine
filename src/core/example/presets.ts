@@ -48,7 +48,9 @@ export const exampleRouteScriptPresets = {
                 example("_Warp::TravelMedallion<50.50,-40.40>"),
                 "(^=) Can also warp to travel medallion and specify a coordinate (x,z). Warping to Labs, Beasts, or Travel Medallion will cause a warp icon to show on the map. You can of course override it with .code(hide-icon-on-map: true)",
                 example("_Warp::DefinitelyValidLocation"),
-                "(^=)If the warp is invalid, engine will generate this error above",
+                "(^=) If the warp is invalid, engine will generate this error above",
+                example("_Memory::HyruleCastle"),
+                "(^=) Memory preset. Valid values are: LanayruRoad, SacredGrounds, LakeKolomo, AncientColumns, KaraKaraBazaar, EldinCanyon, IrchPlain, WestNecluda, HyruleCastle, SpringOfPower, SanidinPark, HyruleField, AshSwamp",
                 example("_Boss::Talus::Stone"),
                 "(^=) Talus. .code(Stone) can be Luminous, Rare, Igneo or Frost",
                 example("_Boss::Hinox::Red"),
@@ -58,8 +60,12 @@ export const exampleRouteScriptPresets = {
                 "(?=) The engine doesn't have predefined coordinates for bosses. You need to manually set the coordinate for the boss",
                 example("_Material<SilentPrincess,1>"),
                 "(^=) Get material. Syntax is .code(_Material<NAME, COUNT>). This also add COUNT to the NAME variable internally",
-                example("# of SilentPrincess"),
-                "(^=) Variables can be reference using .(.v(NAME)..)",
+                {
+                    ".v(SilentPrincess)": {
+                        notes: ".(.v(SilentPrincess)..)"
+                    }
+                },
+                "(^=) Variables can be referenced using .(.v(NAME)..)",
                 example("_Material<My Material>"),
                 "(^=) If you don't want the material to be tracked, simply don't have a comma in the text",
                 "(==) The rest are pretty simple, so I'm just going to list them",
@@ -83,7 +89,8 @@ export const exampleRouteScriptPresets = {
                 example("_Npc::ZoraFemale<Hinox Lady>"),
                 example("_Npc::ZoraMale<Kapson>"),
                 "(==) DISCLAIMER The choices of what npcs to include in the preset is solely based on if appropriate icons are found for it",
-                example("_Cook<food>")
+                example("_Cook<Hearty Food>"),
+                example("_Discover<Dining Hall>")
 
             ],
         },

@@ -114,6 +114,22 @@ export class EngineService extends React.Component<EngineServiceProps, EngineSer
                 this.setRouteScript(exampleRouteScriptPresets as unknown as RouteScript);
                 return;
         }
+
+        // Error
+        const errorLines: DocLine[] = [{
+            lineType: "DocLineBanner",
+            bannerType: BannerType.Error,
+            text: new TypedStringSingle({
+                content: "Invalid Internal Page: "+config.id,
+                type: StringType.Normal
+            }),
+            showTriangle: false
+        }];
+        this.setState({
+            isReady: true,
+            docLines: errorLines
+        });
+        return;
     }
 
     private async loadRouteScriptAsync(url: string): Promise<void> {

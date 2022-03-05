@@ -3,7 +3,7 @@ import { SettingItem, SettingStorage} from "./Setting";
 
 export interface Theme extends SettingItem<Theme> {}
 
-export const Themes = <ReadonlyMapOf<Theme>>{
+export const Themes = {
     Default: {
         name: "Default",
         next: ()=>Themes.Granatus
@@ -12,6 +12,6 @@ export const Themes = <ReadonlyMapOf<Theme>>{
         name: "Granatus",
         next: ()=>Themes.Default
     },
-};
+} as ReadonlyMapOf<Theme>;
 
 export const ThemeStorage = new SettingStorage("Theme", Themes, Themes.Default);

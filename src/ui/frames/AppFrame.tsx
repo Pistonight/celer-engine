@@ -1,4 +1,3 @@
-import L, { LatLngBounds,  } from "leaflet";
 import { useState } from "react";
 import { MapContainer, TileLayer ,Marker, Popup} from "react-leaflet";
 import TestImage from 'data/image/shrine.png';
@@ -42,7 +41,7 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
     // const [mapIcons, mapLines] = mapengine.compute(computedLines);
     // console.log(mapLines);
    
-    const {metadata, docLines, mapIcons, mapLines} = useEngineService();
+    const { metadata, docLines } = useEngineService();
     let errorCount = 0;
     docLines.forEach(l=>{
       if(l.lineType === "DocLineBanner" && l.bannerType === BannerType.Error){
@@ -96,7 +95,7 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
                           throw new Error("Function not implemented.");
                       } } style={appStyle} text={"Route Custom Theme: "} /> */}
 
-    <div className={styles.contribution}>&nbsp;<div className={styles.menuItemValue}>celer-engine v1.0.0</div></div>
+    <div className={styles.contribution}>&nbsp;<div className={styles.menuItemValue}>celer-engine v1.2.0</div></div>
     </div>}
     <div className={styles.statusBar}>
     <div className={styles.statusMessage}>
@@ -131,21 +130,7 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
       </div> */}
   
 
-  {/* <Marker position={[32, -39.0625]}>
-    <Popup>
-      A pretty CSS3 popup. <br /> Easily customizable.
-    </Popup>
-  </Marker>
-  <Marker position={[-32, 39.0625]}>
-    <Popup>
-      A pretty CSS3 popup. <br /> Easily customizable.
-    </Popup>
-  </Marker>
-  <Marker position={[32, 39.0625]}>
-    <Popup>
-      A pretty CSS3 popup. <br /> Easily customizable.
-    </Popup>
-  </Marker> */}
+
 
 
     </div>
