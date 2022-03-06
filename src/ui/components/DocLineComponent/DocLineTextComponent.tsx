@@ -198,7 +198,7 @@ export const DocLineTextWithIconComponent: React.FC<DocLineTextWithIconProps> = 
             <StepNumberWithIcon docLine={docLine}/>
             <div className={clsx(styles.instruction, styles.instructionWithIcon, textStyleName)}>
                 <div className={styles.icon}>
-                    <img width={"100%"} height={"auto"} src={(Icons as unknown as MapOf<string>)[icon]}/>
+                    <img width={"100%"} height={"auto"} src={(Icons as unknown as MapOf<string>)[icon]} alt={icon}/>
                 </div>
                 <div className={styles.iconSideText}>
                     <TypedStringComponent content={text} variables={{}} isNotes={false}/>

@@ -1,21 +1,13 @@
 import { useState } from "react";
-import { MapContainer, TileLayer ,Marker, Popup} from "react-leaflet";
-import TestImage from 'data/image/shrine.png';
-import { MenuItem, MenuItemWithValue } from "../../components/MenuItem/MenuItem";
+import { MenuItem, MenuItemSubmenu, MenuItemWithValue } from "../../components/MenuItem/MenuItem";
 import { useAppRoot } from "ui/root";
 import { useStyles } from "ui/styles";
-import { MapDisplayMode } from "data/settings";
 import "data/scripts";
-import { DocLineComponent } from "ui/components/DocLineComponent";
-import { StringType } from "data/assembly/text/TypedString";
 import { DocFrame } from "./DocFrame";
-import { BannerType, RouteAssemblySection } from "data/assembly/types";
-import { RouteEngine } from "core/engine";
-import { Compiler } from "data/assembly/Compiler";
-import { MapEngine } from "core/map";
-import { MapComponent } from "ui/components/MapComponent/MapComponent";
+import { BannerType, RouteAssemblySection, SplitType } from "data/assembly";
 import { useEngineService } from "ui/root/EngineService";
 import { MapFrame } from "./MapFrame";
+import React from "react";
 
 
 // const engine = new RouteEngine();
@@ -29,10 +21,23 @@ export interface AppFrameProps  {
     // mapCallback: Consumer<LeafletMap>
 
 };
+
+const getSplitSettingText = (value: boolean) => value?"Split":"Don't Split";
+
+const splitSettingsMenuItemRef = React.createRef<HTMLDivElement>();
 export const AppFrame: React.FC<AppFrameProps> = ()=>{
-  const {mapCore, mapDisplayMode, setMapDisplayMode, theme, setTheme} = useAppRoot();
+  const {
+    mapCore, 
+    mapDisplayMode, 
+    setMapDisplayMode, 
+    theme, 
+    setTheme,
+    splitSetting,
+    setSplitSetting,
+  } = useAppRoot();
   const styles = useStyles();
     const [showMenu, setShowMenu] = useState(false);
+    const [contextMenuRef, setContextMenuRef] = useState<React.RefObject<HTMLDivElement> | undefined>(undefined);
 
     
     // const computedRoute = compiler.compile(testScript as unknown as RouteScriptSection[]);
@@ -58,9 +63,41 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
 
       <div className={styles.statusBarFrame}
   style={{ zIndex:showMenu?99999:-1}}
-  onClick={()=>setShowMenu(false)} >
+  onClick={()=>{
+    setShowMenu(false);
+    setContextMenuRef(undefined);
+    }} >
     <div className={styles.menuOverlayFrame}style={showMenu?{ height: "auto" } : undefined}>
-    {showMenu && <div className={styles.menu}>
+      
+    {showMenu && <>
+      {contextMenuRef === splitSettingsMenuItemRef && <div className={styles.submenu} style={{
+        bottom: `calc( 100vh - ${contextMenuRef.current?.getBoundingClientRect().bottom || 0}px )`,
+      }}>
+      <MenuItemWithValue value={getSplitSettingText(splitSetting[SplitType.Shrine])} action={function (): void {
+                          setSplitSetting(!splitSetting[SplitType.Shrine], SplitType.Shrine);
+                      } } text={"Shrine: "} />
+                      <MenuItemWithValue value={getSplitSettingText(splitSetting[SplitType.Tower])} action={function (): void {
+                          setSplitSetting(!splitSetting[SplitType.Tower], SplitType.Tower);
+                      } } text={"Tower: "} />
+                      <MenuItemWithValue value={getSplitSettingText(splitSetting[SplitType.Memory])} action={function (): void {
+                          setSplitSetting(!splitSetting[SplitType.Memory], SplitType.Memory);
+                      } } text={"Memory: "} />
+                      <MenuItemWithValue value={getSplitSettingText(splitSetting[SplitType.Warp])} action={function (): void {
+                          setSplitSetting(!splitSetting[SplitType.Warp], SplitType.Warp);
+                      } } text={"Warp: "} />
+                      <MenuItemWithValue value={getSplitSettingText(splitSetting[SplitType.Hinox])} action={function (): void {
+                          setSplitSetting(!splitSetting[SplitType.Hinox], SplitType.Hinox, SplitType.Talus, SplitType.Molduga);
+                      } } text={"Boss: "} />
+                      <MenuItemWithValue value={getSplitSettingText(splitSetting[SplitType.Korok])} action={function (): void {
+                          setSplitSetting(!splitSetting[SplitType.Korok], SplitType.Korok);
+                      } } text={"Korok: "} />
+                      <MenuItemWithValue value={getSplitSettingText(splitSetting[SplitType.UserDefined])} action={function (): void {
+                          setSplitSetting(!splitSetting[SplitType.UserDefined], SplitType.UserDefined);
+                      } } text={"Other: "} />
+         
+        </div>}
+      
+      <div className={styles.menu}>
         {/* <MenuItemWithValue value={"Compass"} setValueBasedOnCurrent={function (t: string): void {
                           throw new Error("Function not implemented.");
                       } } style={appStyle} text={"Direction Mode: "} />
@@ -73,21 +110,24 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
                                       <MenuItemWithValue value={"Default"} setValueBasedOnCurrent={function (t: string): void {
                           throw new Error("Function not implemented.");
                       } } style={appStyle} text={"Theme: "} /> */}
-                                                                                  <MenuItemWithValue value={theme.name} action={function (): void {
+                          <MenuItemWithValue value={theme.name} action={function (): void {
                           setTheme(theme.next());
+                          setContextMenuRef(undefined);
                       } } text={"Theme: "} />
-                                                            <MenuItemWithValue value={mapDisplayMode.name} action={function (): void {
+                          <MenuItemWithValue value={mapDisplayMode.name} action={function (): void {
+                            setContextMenuRef(undefined);
                           setMapDisplayMode(mapDisplayMode.next());
                           mapCore.invalidateSize();
                       } } text={"Map Size: "} />
-    {/* <hr /> */}
-    {/* <MenuItem style={appStyle} text="Split Settings..." action={function (): void {
-                          console.log(1);
-                      } }/>
-                      <MenuItem style={appStyle} text="Download Livesplit Splits" action={function (): void {
-                          console.log(1);
-                      } }/>
     <hr />
+    <MenuItemSubmenu selected={splitSettingsMenuItemRef === contextMenuRef} text="Split Settings..." hover={function (): void {
+      setContextMenuRef(splitSettingsMenuItemRef);
+                          //console.log(splitSettingsMenuItemRef.current?.getBoundingClientRect());
+                      } } ref={splitSettingsMenuItemRef}/>
+                      {/* <MenuItem text="Download Livesplit Splits" action={function (): void {
+                          console.log(1);
+                      } }/> */}
+    {/* <hr />
     <MenuItem style={appStyle} text="Route Detail..." action={function (): void {
                           console.log(1);
                       } }/>
@@ -95,8 +135,10 @@ export const AppFrame: React.FC<AppFrameProps> = ()=>{
                           throw new Error("Function not implemented.");
                       } } style={appStyle} text={"Route Custom Theme: "} /> */}
 
-    <div className={styles.contribution}>&nbsp;<div className={styles.menuItemValue}>celer-engine v1.2.0</div></div>
-    </div>}
+    <div className={styles.contribution}>&nbsp;<div className={styles.menuItemValue}>celer-engine v1.3.0</div></div>
+    </div>
+    </>
+    }
     <div className={styles.statusBar}>
     <div className={styles.statusMessage}>
         {metadata.Name}

@@ -1,8 +1,6 @@
-import { ReactNode } from "react";
+import clsx from "clsx";
+import React from "react";
 import { useStyles } from "ui/styles";
-import { Consumer } from "../../data/util/type";
-
-
 
 export interface MenuItemProps {
     tooltip?: string;
@@ -14,16 +12,31 @@ export interface MenuItemWithValueProps extends MenuItemProps{
     value: string
 }
 
+export interface MenuItemSubmenurops{
+    text: string;
+    selected: boolean;
+    hover: ()=>void;
+}
+
 export const MenuItem: React.FC<MenuItemProps> = ({tooltip, text, action})=>{
     const styles = useStyles();
-    return <div title={tooltip} className={styles.menuItem} onClick={()=>{
+    return <div title={tooltip} className={clsx(styles.menuItem, styles.menuItemClickable)} onClick={()=>{
         action()
     }}>{text}</div>;
 };
 
-export function MenuItemWithValue<V>({tooltip, text, value, action}: React.PropsWithChildren<MenuItemWithValueProps>): JSX.Element {
+export const MenuItemSubmenu = React.forwardRef<HTMLDivElement, MenuItemSubmenurops>(({text, selected, hover}, ref)=>{
     const styles = useStyles();
-    return <div title={tooltip} className={styles.menuItem} onClick={(e)=>{
+    return <div className={clsx(styles.menuItem, selected && styles.menuItemSelected)} ref={ref} onMouseEnter={()=>{
+        hover()
+    }} onClick={(e)=>{
+        e.stopPropagation();
+    }}>{text}</div>;
+});
+
+export const MenuItemWithValue: React.FC<MenuItemWithValueProps> = ({tooltip, text, value, action}) => {
+    const styles = useStyles();
+    return <div title={tooltip} className={clsx(styles.menuItem, styles.menuItemClickable)} onClick={(e)=>{
         action();
         e.stopPropagation();
     }}>

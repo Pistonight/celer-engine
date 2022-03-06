@@ -1,5 +1,6 @@
 import { MapCore } from "core/map";
-import { MapDisplayMode, MapDisplayModes, MapDisplayModeStorage, Theme, Themes, ThemeStorage } from "data/settings";
+import { SplitType } from "data/assembly";
+import { MapDisplayMode, MapDisplayModes, MapDisplayModeStorage, SplitSettingStorage, SplitTypeSetting, Theme, Themes, ThemeStorage } from "data/settings";
 import { Consumer, EmptyObject } from "data/util";
 import React, { useContext } from "react";
 import { AppColors, StyleProvider } from "ui/styles";
@@ -18,6 +19,9 @@ type AppRootContextState = {
     theme: Theme,
     setTheme: Consumer<Theme>,
 
+    splitSetting: SplitTypeSetting<boolean>,
+    setSplitSetting: (value: boolean, ...splitType: SplitType[])=>void,
+
     mapCore: MapCore,
 }
 
@@ -27,12 +31,13 @@ interface AppRootState {
     mapDisplayMode: MapDisplayMode,
     theme: Theme,
     mapCore: MapCore,
+    splitSetting: SplitTypeSetting<boolean>,
 }
-
 
 const initialState: AppRootState ={
     mapDisplayMode: MapDisplayModeStorage.load(),
     theme: ThemeStorage.load(),
+    splitSetting: SplitSettingStorage.load(),
     mapCore: new MapCore()
 };
 
@@ -58,6 +63,18 @@ export class AppRoot extends React.Component<AppRootProps, AppRootState> {
         });
     }
 
+    private setSplitSetting(value: boolean, ...splitType: SplitType[]){
+        const newSetting = {
+            ...this.state.splitSetting,
+        };
+        splitType.forEach(t=>newSetting[t]=value);
+        console.log(newSetting);
+        SplitSettingStorage.save(newSetting);
+        this.setState({
+            splitSetting: newSetting
+        });
+    }
+
     public render(): JSX.Element {
 
         const appColors = ThemeColorMap[this.state.theme.name] ?? DefaultColors;
@@ -66,8 +83,10 @@ export class AppRoot extends React.Component<AppRootProps, AppRootState> {
             mapDisplayMode: this.state.mapDisplayMode,
             mapCore: this.state.mapCore,
             theme: this.state.theme,
+            splitSetting: this.state.splitSetting,
             setMapDisplayMode: this.setMapDisplayMode.bind(this),
             setTheme: this.setTheme.bind(this),
+            setSplitSetting: this.setSplitSetting.bind(this),
         }}>
             <StyleProvider mapDisplayMode={this.state.mapDisplayMode} appColors={appColors}>
                 <EngineService mapCore={this.state.mapCore}>

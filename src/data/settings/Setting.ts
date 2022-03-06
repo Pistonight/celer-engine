@@ -1,3 +1,4 @@
+import { SplitType } from "data/assembly";
 import { MapOf } from "data/util";
 import { LocalStorageWrapper } from "./LocalStorageWrapper";
 
@@ -21,7 +22,7 @@ export class SettingStorage<T extends SettingItem<T>>{
         this.defaultItem = defaultItem;
     }
     public save(item: T) {
-        LocalStorageWrapper.store(withSettingPrefix(this.key), item.name);
+        LocalStorageWrapper.store(withSettingPrefix(this.key), item, item=>item.name);
     }
     public load(): T {
         return LocalStorageWrapper.load(withSettingPrefix(this.key), this.defaultItem, (name)=>{
@@ -33,5 +34,24 @@ export class SettingStorage<T extends SettingItem<T>>{
             }
             return this.defaultItem;
         });
+    }
+}
+
+export type SplitTypeSetting<T> = {[type in SplitType]: T};
+
+export class SplitTypeSettingStorage<T>{
+    private key: string;
+    private defaultValues: SplitTypeSetting<T>;
+
+    constructor(key: string, defaultValues: SplitTypeSetting<T>){
+        this.key = key;
+        this.defaultValues = defaultValues;
+    }
+
+    public save(values: SplitTypeSetting<T>) {
+        LocalStorageWrapper.store(withSettingPrefix(this.key), values);
+    }
+    public load(): SplitTypeSetting<T> {
+        return LocalStorageWrapper.load(withSettingPrefix(this.key), this.defaultValues);
     }
 }

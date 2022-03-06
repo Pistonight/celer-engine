@@ -27,7 +27,6 @@ export class MapCore {
             const zoom = (e.target || e.sourceTarget)._zoom || 4;
             const shouldAddOtherIcons = this.shouldShowOtherIcons(zoom);
             this.retryIfMapNotLoaded((map)=>{
-                console.log(this.otherIcons);
                 if(this.otherIcons && map.hasLayer(this.otherIcons)){
                     if(!shouldAddOtherIcons){
                         this.removeFeature(map, this.otherIcons);

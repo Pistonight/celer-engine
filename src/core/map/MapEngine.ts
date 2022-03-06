@@ -9,6 +9,7 @@ const DefaultLineColor = "#3388ff";
 export class MapEngine {
 
     private currentCoord: Coord = {x:0, z:0};
+    private currentIconCoord: Coord = {x:0, z:0};
     private currentColor: string = DefaultLineColor;
     private currentVertices: Coord[] = [];
 
@@ -18,6 +19,7 @@ export class MapEngine {
             x:-1132.61,z: 1917.72
         };
         this.currentCoord = sorCoord;
+        this.currentIconCoord = sorCoord;
         this.currentColor = DefaultLineColor;
         this.currentVertices = [sorCoord];
 
@@ -48,7 +50,7 @@ export class MapEngine {
         movements.forEach(m=>this.computeMovement(m, outLines));
         if(line.lineType === "DocLineTextWithIcon" && !line.hideIconOnMap){
             outIcons.push({
-                coord: {...this.currentCoord},
+                coord: {...this.currentIconCoord},
                 iconName: line.icon,
                 type: line.splitType
             });
@@ -62,6 +64,7 @@ export class MapEngine {
                 color: AssistLineColor,
                 vertices: [{...this.currentCoord}, to]
             });
+            this.currentIconCoord = to;
         }else{
             if(isWarp){
                 this.endCurrentPathIfNeed(outLines);
@@ -70,6 +73,7 @@ export class MapEngine {
                 this.currentVertices.push(to);
             }
             this.currentCoord = to;
+            this.currentIconCoord = to;
         }
     }
 

@@ -1,9 +1,13 @@
 const STORAGE_KEY_PREFIX = "Celer.";
 
 export class LocalStorageWrapper {
-    public static store<T>(key: string, value: T): void {
+    public static store<T>(key: string, value: T, customStringifier?: (item: T)=>string): void {
         const prefixedKey = STORAGE_KEY_PREFIX+key;
-        localStorage.setItem(prefixedKey, JSON.stringify(value));
+        if(customStringifier){
+            localStorage.setItem(prefixedKey, customStringifier(value));
+        }else{
+            localStorage.setItem(prefixedKey, JSON.stringify(value));
+        }
     }
     public static load<T>(key: string, defaultValue: T, customParser?: (valueString: string)=>T): T {
         const prefixedKey = STORAGE_KEY_PREFIX+key;

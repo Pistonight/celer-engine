@@ -45,7 +45,7 @@ const TypeStringRender: React.FC<TypedStringRenderProps> = ({isNotes, content, t
         }
         return (
             <span>
-                <a className={isNotes ? styles.stringLinkColorNotes : styles.stringLinkColor} href={linkAddress} target="_blank">
+                <a className={isNotes ? styles.stringLinkColorNotes : styles.stringLinkColor} href={linkAddress} target="_blank" rel="noreferrer">
                     {linkText}
                 </a>
             </span>
@@ -55,6 +55,9 @@ const TypeStringRender: React.FC<TypedStringRenderProps> = ({isNotes, content, t
         return <span className="code" >{content}</span>
     }
     //TODO direction mode
+    if(type === StringType.Direction){
+        return <span className={isNotes ? styles.stringDirectionColorNotes : styles.stringDirectionColor} >{content}</span>
+    }
     let className = "";
     switch(type){
         case StringType.Item:

@@ -8,6 +8,7 @@ import { addKorok, getMissingKoroks, hasKorok, KorokData, newData } from "./koro
 // import { InstructionPacketWithExtend } from "./creator";
 import { DocLine } from "core/route";
 import { BannerType, RouteAssembly, RouteAssemblySection, SplitType } from "data/assembly/types";
+import { defaultSplitSetting, SplitTypeSetting } from "data/settings";
 
 //Recharge time in seconds
 const GALE_RECHARGE = 360;
@@ -22,6 +23,11 @@ const ShrineFormat = "{{KRK}} {{Text}} {{SRN}}"
 const KorokFormat = "{{Seed}} {{ID}} {{Text}}"
 
 export class RouteEngine{
+	// Engine configuration
+	private splitSetting: SplitTypeSetting<boolean> =defaultSplitSetting;
+
+
+
 	private sectionNumber = 0;
 	private lineNumber = 0;
 	private step = "1";
@@ -71,6 +77,10 @@ export class RouteEngine{
 		// this.dupeKorok = [];
 	}
 
+	public setSplitSetting(splitSetting: SplitTypeSetting<boolean>){
+		this.splitSetting = splitSetting;
+	}
+
 	// private reportDebugInfo(location: string): void {
 	// 	console.error({
 	// 		line: this.lineNumber,
@@ -94,6 +104,7 @@ export class RouteEngine{
 				sectionNumber: this.sectionNumber
 			});
 			this.sectionNumber++;
+			this.step = "1";
 		}
 		section.route.forEach(line=>this.computeAssembly(line, output));
 	}
@@ -139,35 +150,59 @@ export class RouteEngine{
 			case SplitType.Shrine:
 				this.shrineCount++;
 				counter = String(this.shrineCount);
+				if(this.splitSetting[SplitType.Shrine]){
+					this.step = "1";
+				}
 				break;
 			case SplitType.Tower:
 				this.towerCount++;
 				counter = ROMAN_NUMERAL[this.towerCount];
-				break
+				if(this.splitSetting[SplitType.Tower]){
+					this.step = "1";
+				}
+				break;
 			case SplitType.Korok:
 				this.korokCount++;
 				this.korokSeed++;
 				counter = String(this.korokCount);
+				if(this.splitSetting[SplitType.Korok]){
+					this.step = "1";
+				}
 				break;
 			case SplitType.Warp:
 				this.warpCount++;
 				counter = String(this.warpCount);
+				if(this.splitSetting[SplitType.Warp]){
+					this.step = "1";
+				}
 				break;
 			case SplitType.Memory:
 				this.memoryCount++;
 				counter = ROMAN_NUMERAL[this.memoryCount];
+				if(this.splitSetting[SplitType.Memory]){
+					this.step = "1";
+				}
 				break;
 			case SplitType.Hinox:
 				this.hinoxCount++;
 				counter = String(this.hinoxCount);
+				if(this.splitSetting[SplitType.Hinox]){
+					this.step = "1";
+				}
 				break;
 			case SplitType.Talus:
 				this.talusCount++;
 				counter = String(this.talusCount);
+				if(this.splitSetting[SplitType.Talus]){
+					this.step = "1";
+				}
 				break;
 			case SplitType.Molduga:
 				this.moldugaCount++;
 				counter = String(this.moldugaCount);
+				if(this.splitSetting[SplitType.Molduga]){
+					this.step = "1";
+				}
 				break;
 		}
 

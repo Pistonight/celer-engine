@@ -36,6 +36,19 @@ export const deprecatedStyles = ({sizes, colors}: ComputeStyleInputs) => {
             marginRight: "3px",
             marginBottom:`calc( 4px + ${sizes.statusBar} )`
         },
+        submenu: {
+            position: "fixed",
+            right: `calc( ${sizes.map} + 20em + 3px )`,
+            
+            width: "10em",
+            backgroundColor: colors.menuBackground,
+            boxSizing:"border-box",
+            border:`1px solid ${colors.menuBorder}`,
+            padding: "2px",
+            //marginLeft:"calc( 100% - 30em - 3px )",//TODO
+            //marginRight: "calc( 3px + 10em )",
+            //marginBottom:`calc( 4px + ${sizes.statusBar} )`
+        },
 
         contribution: {
             padding: "5px", 
