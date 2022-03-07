@@ -1,5 +1,6 @@
 
 import { BannerType, Movement, SplitType, TypedString } from "data/assembly";
+import { MapOf } from "data/util";
 
 export type DocLine = 
     DocLineSection |
@@ -18,6 +19,7 @@ export interface DocLineBanner {
     bannerType: BannerType;
     text: TypedString;
     showTriangle: boolean;
+    variables?: MapOf<number>;
 }
 
 export interface DocLineText {
@@ -31,6 +33,8 @@ export interface DocLineText {
 
     movements: Movement[];
     mapLineColor?: string;
+
+    variables: MapOf<number>;
     
 }
 

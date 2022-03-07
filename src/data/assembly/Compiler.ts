@@ -1,4 +1,5 @@
 import { RouteScriptExtend, RouteSection, RouteStep, switchModule, switchSection, switchStep, TARGET_VERSION} from "data/compile";
+import { MapOf } from "data/util";
 import { Movement, SplitType } from ".";
 import { getModules,CompilerPresetModule } from "./modules";
 import { StringParser } from "./text";
@@ -178,6 +179,19 @@ export class Compiler {
                 isWarp: false,
                 isAway: false,
             }]
+        }
+        if(extend["var-change"]){
+            // Make sure var change is a map
+            const varMap = extend["var-change"];
+            if(typeof varMap === "object" && !Array.isArray(varMap)){
+                const validatedMap: MapOf<number> = {};
+                for(const key in varMap){
+                    const num = Number(varMap[key]);
+                    if(num){
+                        validatedMap[key]=num;
+                    }
+                }
+            }
         }
     }
 

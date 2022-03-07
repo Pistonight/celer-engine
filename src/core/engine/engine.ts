@@ -9,6 +9,7 @@ import { addKorok, getMissingKoroks, hasKorok, KorokData, newData } from "./koro
 import { DocLine } from "core/route";
 import { BannerType, RouteAssembly, RouteAssemblySection, SplitType } from "data/assembly/types";
 import { defaultSplitSetting, SplitTypeSetting } from "data/settings";
+import { MapOf } from "data/util";
 
 //Recharge time in seconds
 const GALE_RECHARGE = 360;
@@ -47,7 +48,7 @@ export class RouteEngine{
 	// private furyRechargeTime = 0;
 	// private enableGalePlus = false;
 	// private enableFuryPlus = false;
-	// private variables: {[key: string]:number} = {};
+	private variables: MapOf<number> = {};
 
 	// private korokData: KorokData = {};
 	// private dupeKorok: string[] = [];
@@ -72,7 +73,7 @@ export class RouteEngine{
 		// this.enableGalePlus = false;
 		// this.enableFuryPlus = false;
 		
-		// this.variables = {};
+		this.variables = {};
 		// this.korokData = newData();
 		// this.dupeKorok = [];
 	}
@@ -110,28 +111,35 @@ export class RouteEngine{
 	}
 
 	private computeAssembly(data: RouteAssembly, output: DocLine[]): void {
+		this.computeVariables(data.variableChange);
 		if(data.bannerType !== undefined){
 			output.push({
 				lineType: "DocLineBanner",
 				text: data.text,
 				bannerType: data.bannerType,
-				showTriangle: !!data.bannerTriangle
+				showTriangle: !!data.bannerTriangle,
+				variables: {...this.variables}
 			});
 			return;
 		}
 		
+		this.computeNonBannerStep(data, output);
+	}
+
+	private computeNonBannerStep(data: RouteAssembly, output: DocLine[]): void {
 		let step: string | undefined = undefined;
 		if(data.isStep){
 			step = this.step;
 			this.incStep();
 		}
-
+		
 		const common = {
 			text: data.text,
 			lineNumber: String(this.lineNumber),
 			stepNumber: step,
 			movements: data.movements || [],
-			notes: data.notes
+			notes: data.notes,
+			variables: {...this.variables}
 		}
 
 
@@ -220,6 +228,18 @@ export class RouteEngine{
 		})
 		
 		this.lineNumber++;
+	}
+
+	private computeVariables(variables?: MapOf<number>): void {
+		if(!variables){
+			return;
+		}
+		for(const key in variables){
+			if(!(key in this.variables)){
+				this.variables[key] = 0;
+			}
+			this.variables[key]+=variables[key]
+		}
 	}
 
 	// private computeInstructions(route: RouteAssemblySection[]):DocLine[] {

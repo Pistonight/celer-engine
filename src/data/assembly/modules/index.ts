@@ -6,14 +6,18 @@ import { getSimpleModules } from "./Simple";
 import CustomModule from "./Custom";
 import MemoryModule from "./Memory";
 import BossModule from "./Boss";
+import MaterialModule from "./Material";
+import TodModule from "./Tod";
 
 export const getModules = ()=>([
     KorokModule,
+    MaterialModule,
     ShrineModule,
     TowerModule,
     WarpModule,
     MemoryModule,
     BossModule,
+    TodModule,
     ...getSimpleModules(),
     CustomModule
 ]);

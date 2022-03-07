@@ -130,7 +130,7 @@ const StepNumberWithIcon: React.FC<DocLineTextWithIconProps> = ({docLine})=>{
 }
 
 const Notes: React.FC<DocLineTextProps | DocLineTextWithIconProps> = ({docLine, altNotesColor})=>{
-    const {notes} = docLine;
+    const {notes, variables} = docLine;
     const styles = useStyles();
     if(!notes){
         return null;
@@ -138,13 +138,13 @@ const Notes: React.FC<DocLineTextProps | DocLineTextWithIconProps> = ({docLine, 
     
     return  (
         <div className={clsx(styles.notes, altNotesColor && styles.notesAlt)}>
-            <TypedStringComponent content={notes} variables={{}} isNotes/>   
+            <TypedStringComponent content={notes} variables={variables} isNotes/>   
         </div>
     );
 }
 
 export const DocLineTextComponent: React.FC<DocLineTextProps> = ({docLine,altLineColor,altNotesColor})=> {
-    const {text} = docLine;
+    const {text, variables} = docLine;
     const styles = useStyles();
     
     return (
@@ -153,7 +153,7 @@ export const DocLineTextComponent: React.FC<DocLineTextProps> = ({docLine,altLin
             <NoCounter />
             <StepNumber docLine={docLine} />
             <span className={clsx(styles.instruction, styles.instructionDefaultColor)}>
-                <TypedStringComponent content={text} variables={{}} isNotes={false}/>{"\u200b"}
+                <TypedStringComponent content={text} variables={variables} isNotes={false}/>{"\u200b"}
             </span>
             <Notes docLine={docLine} altNotesColor={altNotesColor} />
         </div>
@@ -161,7 +161,7 @@ export const DocLineTextComponent: React.FC<DocLineTextProps> = ({docLine,altLin
 };
 
 export const DocLineTextWithIconComponent: React.FC<DocLineTextWithIconProps> = ({docLine,altLineColor,altNotesColor})=> {
-    const {text, icon, comment, splitType} = docLine;
+    const {text, icon, comment, splitType, variables} = docLine;
     const styles = useStyles();
     
     let textStyleName = styles.instructionDefaultColor;
@@ -201,9 +201,9 @@ export const DocLineTextWithIconComponent: React.FC<DocLineTextWithIconProps> = 
                     <img width={"100%"} height={"auto"} src={(Icons as unknown as MapOf<string>)[icon]} alt={icon}/>
                 </div>
                 <div className={styles.iconSideText}>
-                    <TypedStringComponent content={text} variables={{}} isNotes={false}/>
+                    <TypedStringComponent content={text} variables={variables} isNotes={false}/>
                     <div className={clsx(styles.commentFont, styles.commentColor)}>
-                        {comment && <TypedStringComponent content={comment} variables={{}} isNotes={false}/>}{"\u200b"}
+                        {comment && <TypedStringComponent content={comment} variables={variables} isNotes={false}/>}{"\u200b"}
                     </div>
                 </div>
             </div>

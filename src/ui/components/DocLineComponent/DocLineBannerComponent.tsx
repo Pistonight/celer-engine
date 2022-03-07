@@ -9,7 +9,7 @@ export interface DocLineBannerProps{
 }
 
 export const DocLineBannerComponent: React.FC<DocLineBannerProps> = ({docLine})=> {
-    const {text, bannerType, showTriangle} = docLine;
+    const {text, bannerType, showTriangle, variables} = docLine;
     const styles = useStyles();
 
     let containerColorStyle;
@@ -33,7 +33,7 @@ export const DocLineBannerComponent: React.FC<DocLineBannerProps> = ({docLine})=
             {showTriangle && <div className={clsx(styles.bannerTriangle, triangleColorStyle)} />}
             <div className={clsx(styles.bannerContainer, showTriangle && styles.bannerContainerWithTriangle, containerColorStyle)}>
                 <p className={clsx(styles.bannerText, showTriangle && styles.bannerTextWithTriangle)} >
-                    <TypedStringComponent content={text} variables={{}} isNotes={false}/>
+                    <TypedStringComponent content={text} variables={variables || {}} isNotes={false}/>
                 </p>
             </div>
         </div>

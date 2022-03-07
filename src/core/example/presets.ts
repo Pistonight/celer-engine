@@ -58,8 +58,8 @@ export const exampleRouteScriptPresets = {
                 example("_Boss::Molduga"),
                 "(^=) Molduga.",
                 "(?=) The engine doesn't have predefined coordinates for bosses. You need to manually set the coordinate for the boss",
-                example("_Material<SilentPrincess,1>"),
-                "(^=) Get material. Syntax is .code(_Material<NAME, COUNT>). This also add COUNT to the NAME variable internally",
+                example("_Material<Silent Princess,1>"),
+                "(^=) Get material. Syntax is .code(_Material<NAME, COUNT>). This also add COUNT to the NAME variable internally. Spaces in the name will be removed in the variable name",
                 {
                     ".v(SilentPrincess)": {
                         notes: ".(.v(SilentPrincess)..)"

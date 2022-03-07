@@ -1016,7 +1016,7 @@ const mapKorokToImage = (korok: KorokType):string =>{
         case KorokType.FlowerCount: return "korok-flower";
         case KorokType.IceBlock: return "korok-ice";
         case KorokType.JumpFence: return "korok";
-        case KorokType.LiftRock: return "korok";
+        case KorokType.LiftRock: return "korok-rock";
         case KorokType.LiftRockDoor: return "korok-magnesis";
         case KorokType.LiftRockTree: return "korok-rock-tree";
         case KorokType.LiftRockRubble: return "korok-rock-under";

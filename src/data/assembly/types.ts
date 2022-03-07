@@ -25,7 +25,7 @@ export type RouteAssembly = { //RouteAssembly
 	//spendSeed: number,
 
 	// Variable Changes
-	//variableChange?: MapOf<number>,
+	variableChange?: MapOf<number>,
 	// Champion Ability Usage
 	//gale?: number,
 	//fury?: number

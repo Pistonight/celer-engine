@@ -53,4 +53,6 @@ export const getSimpleModules = ()=>([
     new SimpleModule("_Npc::ZoraMale<", ">", StringType.Npc, "npc-zora-male"),
     new SimpleModule("_Cook<", ">", StringType.Item, "cook"),
     new SimpleModule("_Discover<", ">", StringType.Location, "location", "DISCOVER"),
+    new SimpleModule("_Snap::Elite<", ">", StringType.Enemy, "camera-elite", "SNAP ELITE"),
+    new SimpleModule("_Snap::Quest<", ">", StringType.Npc, "snap", "SNAP for QUEST"),
 ]);
