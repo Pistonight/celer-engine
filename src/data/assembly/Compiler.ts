@@ -191,6 +191,7 @@ export class Compiler {
                         validatedMap[key]=num;
                     }
                 }
+                data.variableChange = validatedMap;
             }
         }
     }
