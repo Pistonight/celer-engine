@@ -46,10 +46,10 @@ class StringParser {
         if(isStep){
             str = str.substring(1).trimStart();
         }
-        const bannerError = str.startsWith("(!=)");
-        const bannerWarning = str.startsWith("(?=)");
-        const bannerTriangle = str.startsWith("(^=)");
-        const bannerNormal = str.startsWith("(==)");
+        const bannerError = str.startsWith("(!=)") || str.startsWith("(^!)");
+        const bannerWarning = str.startsWith("(?=)") || str.startsWith("(^?)");
+        const bannerTriangle = str.startsWith("(^=)") || str.startsWith("(^!)") || str.startsWith("(^?)");
+        const bannerNormal = str.startsWith("(==)") || str.startsWith("(^=)");
         
         if(bannerError || bannerWarning || bannerTriangle || bannerNormal){
             str = str.substring(4).trimStart();
@@ -59,19 +59,17 @@ class StringParser {
         if(bannerError){
             banner = {
                 bannerType: BannerType.Error,
+                bannerTriangle
             };
         }else if(bannerWarning){
             banner = {
                 bannerType: BannerType.Warning,
-            };
-        }else if(bannerTriangle){
-            banner = {
-                bannerType: BannerType.Notes,
-                bannerTriangle: true
+                bannerTriangle
             };
         }else if(bannerNormal){
             banner = {
                 bannerType: BannerType.Notes,
+                bannerTriangle
             };
         }
         return [str, {isStep, ...banner}];
@@ -142,6 +140,11 @@ class StringParser {
                     const type = FuncMap[funcName as keyof typeof FuncMap];
                     typeStack.push(currentType);
                     currentType = type;
+                    //Special case for fury/gale, because they accept 0 args
+                    //Need to detect this case and push a block with empty string
+                    if(tokens[i+3]===")" && (currentType === StringType.Fury || currentType === StringType.Gale)){
+                        blocks.push(new TypedStringSingle({type: currentType, content: ""}));
+                    }
                 }else{
                     blocks.push(new TypedStringSingle({type: currentType, content: `.${funcName}(`}));
                 }

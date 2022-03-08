@@ -10,14 +10,19 @@ import { DocLine } from "core/route";
 import { BannerType, RouteAssembly, RouteAssemblySection, SplitType } from "data/assembly/types";
 import { defaultSplitSetting, SplitTypeSetting } from "data/settings";
 import { MapOf } from "data/util";
+import { StringType, TypedString, TypedStringBlock, TypedStringSingle } from "data/assembly";
 
 //Recharge time in seconds
-const GALE_RECHARGE = 360;
-const FURY_RECHARGE = 720;
-const GALE_PLUS_RECHARGE = 120;
-const FURY_PLUS_RECHARGE = 240;
+const BASE_ABILITY_RECHARGE = {
+	gale: 360,
+	fury: 720
+}
+// const GALE_RECHARGE = 360;
+// const FURY_RECHARGE = 720;
+// const GALE_PLUS_RECHARGE = 120;
+// const FURY_PLUS_RECHARGE = 240;
 // Default estimate for each step is 20 seconds
-const STEP_ESTIMATE = 20;
+// const STEP_ESTIMATE = 20;
 const ROMAN_NUMERAL = ["","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"];
 
 const ShrineFormat = "{{KRK}} {{Text}} {{SRN}}"
@@ -33,7 +38,7 @@ export class RouteEngine{
 	private lineNumber = 0;
 	private step = "1";
 	private korokCount = 0;
-	private korokSeed = 0;
+	//private korokSeed = 0;
 	private shrineCount = 0;
 	private memoryCount = 0;
 	private towerCount = 0;
@@ -41,13 +46,19 @@ export class RouteEngine{
 	private talusCount = 0;
 	private hinoxCount = 0;
 	private moldugaCount = 0;
-	// private gale = 0;
-	// private fury = 0;
-	
-	// private galeRechargeTime = 0;
-	// private furyRechargeTime = 0;
-	// private enableGalePlus = false;
-	// private enableFuryPlus = false;
+	private abilityCount = {
+		gale: 3,
+		fury: 3
+	};
+	private abilityUpgrade = {
+		gale: false,
+		fury: false
+	};
+	private abilityRechargeTime = {
+		gale: 0,
+		fury: 0
+	};
+	private isInHyruleCastle: boolean = false;
 	private variables: MapOf<number> = {};
 
 	// private korokData: KorokData = {};
@@ -58,7 +69,7 @@ export class RouteEngine{
 		this.lineNumber = 1;
 		this.step = "1";
 		this.korokCount = 0;
-		this.korokSeed = 0;
+		//this.korokSeed = 0;
 		this.shrineCount = 0;
 		this.towerCount = 0;
 		this.warpCount = 0;
@@ -66,12 +77,20 @@ export class RouteEngine{
 		this.talusCount = 0;
 		this.hinoxCount = 0;
 		this.moldugaCount = 0;
-		// this.gale = 3;
-		// this.fury = 3;
-		// this.galeRechargeTime = 0;
-		// this.furyRechargeTime = 0;
-		// this.enableGalePlus = false;
-		// this.enableFuryPlus = false;
+		this.abilityCount = {
+			gale: 3,
+			fury: 3
+		};
+		this.abilityUpgrade = {
+			gale: false,
+			fury: false
+		};
+		this.abilityRechargeTime = {
+			gale: 0,
+			fury: 0
+		};
+		this.isInHyruleCastle = false;
+
 		
 		this.variables = {};
 		// this.korokData = newData();
@@ -93,7 +112,22 @@ export class RouteEngine{
 	public compute(route: RouteAssemblySection[]): DocLine[] {
 		this.initialize();
 		const lines: DocLine[] = [];
-		route.forEach(section=>this.computeSection(section, lines));
+		try{
+			route.forEach(section=>this.computeSection(section, lines));
+		}catch(e){
+			console.error(e);
+			lines.push({
+				lineType: "DocLineBanner",
+				text: new TypedStringSingle({
+					content: "The Engine has encountered an error. Please check console logs",
+					type: StringType.Normal
+				}),
+				bannerType: BannerType.Error,
+				showTriangle: false,
+				variables: {}
+			});
+		}
+		
 		return lines;
 	}
 
@@ -128,17 +162,31 @@ export class RouteEngine{
 
 	private computeNonBannerStep(data: RouteAssembly, output: DocLine[]): void {
 		let step: string | undefined = undefined;
+		const error = new Set<string>();
+
+		let galeText = "?";
+		if(data.gale){
+			galeText = this.processAbilityUsage("gale", data.gale, error);
+		}
+		let furyText = "?";
+		if(data.fury){
+			furyText = this.processAbilityUsage("fury", data.fury, error);
+		}
+
+		const time = this.estimateTime(data.splitType, data.text);
+		this.processAbilityRecharge(time);
+
 		if(data.isStep){
 			step = this.step;
 			this.incStep();
 		}
 		
 		const common = {
-			text: data.text,
+			text: this.applyAbilityTextBlock(data.text, furyText, galeText, error),
 			lineNumber: String(this.lineNumber),
 			stepNumber: step,
 			movements: data.movements || [],
-			notes: data.notes,
+			notes: this.applyAbilityTextBlockOptional(data.notes, furyText, galeText, error),
 			variables: {...this.variables}
 		}
 
@@ -148,86 +196,95 @@ export class RouteEngine{
 				...common,
 				lineType: "DocLineText",
 			});
-			this.lineNumber++;
-			return;
+		}else{
+			// counter
+			let counter = "";
+			switch(data.splitType){
+				case SplitType.Shrine:
+					this.shrineCount++;
+					counter = String(this.shrineCount);
+					if(this.splitSetting[SplitType.Shrine]){
+						this.step = "1";
+					}
+					break;
+				case SplitType.Tower:
+					this.towerCount++;
+					counter = ROMAN_NUMERAL[this.towerCount];
+					if(this.splitSetting[SplitType.Tower]){
+						this.step = "1";
+					}
+					break;
+				case SplitType.Korok:
+					this.korokCount++;
+					//this.korokSeed++;
+					counter = String(this.korokCount);
+					if(this.splitSetting[SplitType.Korok]){
+						this.step = "1";
+					}
+					break;
+				case SplitType.Warp:
+					this.warpCount++;
+					counter = String(this.warpCount);
+					if(this.splitSetting[SplitType.Warp]){
+						this.step = "1";
+					}
+					break;
+				case SplitType.Memory:
+					this.memoryCount++;
+					counter = ROMAN_NUMERAL[this.memoryCount];
+					if(this.splitSetting[SplitType.Memory]){
+						this.step = "1";
+					}
+					break;
+				case SplitType.Hinox:
+					this.hinoxCount++;
+					counter = String(this.hinoxCount);
+					if(this.splitSetting[SplitType.Hinox]){
+						this.step = "1";
+					}
+					break;
+				case SplitType.Talus:
+					this.talusCount++;
+					counter = String(this.talusCount);
+					if(this.splitSetting[SplitType.Talus]){
+						this.step = "1";
+					}
+					break;
+				case SplitType.Molduga:
+					this.moldugaCount++;
+					counter = String(this.moldugaCount);
+					if(this.splitSetting[SplitType.Molduga]){
+						this.step = "1";
+					}
+					break;
+			}
+
+
+			output.push({
+				...common,
+				lineType: "DocLineTextWithIcon",
+				icon: data.icon,
+				comment: this.applyAbilityTextBlockOptional(data.comment, furyText, galeText, error),
+				
+				counterValue: counter,
+				splitType: data.splitType,
+				mapLineColor: data.lineColor,
+				hideIconOnMap: data.hideIconOnMap
+			})
 		}
 
-		// counter
-		let counter = "";
-		switch(data.splitType){
-			case SplitType.Shrine:
-				this.shrineCount++;
-				counter = String(this.shrineCount);
-				if(this.splitSetting[SplitType.Shrine]){
-					this.step = "1";
-				}
-				break;
-			case SplitType.Tower:
-				this.towerCount++;
-				counter = ROMAN_NUMERAL[this.towerCount];
-				if(this.splitSetting[SplitType.Tower]){
-					this.step = "1";
-				}
-				break;
-			case SplitType.Korok:
-				this.korokCount++;
-				this.korokSeed++;
-				counter = String(this.korokCount);
-				if(this.splitSetting[SplitType.Korok]){
-					this.step = "1";
-				}
-				break;
-			case SplitType.Warp:
-				this.warpCount++;
-				counter = String(this.warpCount);
-				if(this.splitSetting[SplitType.Warp]){
-					this.step = "1";
-				}
-				break;
-			case SplitType.Memory:
-				this.memoryCount++;
-				counter = ROMAN_NUMERAL[this.memoryCount];
-				if(this.splitSetting[SplitType.Memory]){
-					this.step = "1";
-				}
-				break;
-			case SplitType.Hinox:
-				this.hinoxCount++;
-				counter = String(this.hinoxCount);
-				if(this.splitSetting[SplitType.Hinox]){
-					this.step = "1";
-				}
-				break;
-			case SplitType.Talus:
-				this.talusCount++;
-				counter = String(this.talusCount);
-				if(this.splitSetting[SplitType.Talus]){
-					this.step = "1";
-				}
-				break;
-			case SplitType.Molduga:
-				this.moldugaCount++;
-				counter = String(this.moldugaCount);
-				if(this.splitSetting[SplitType.Molduga]){
-					this.step = "1";
-				}
-				break;
-		}
-
-
-		output.push({
-			...common,
-			lineType: "DocLineTextWithIcon",
-			icon: data.icon,
-			comment: data.comment,
-			
-			counterValue: counter,
-			splitType: data.splitType,
-			mapLineColor: data.lineColor,
-			hideIconOnMap: data.hideIconOnMap
-		})
+		
 		
 		this.lineNumber++;
+
+		error.forEach(e=>{
+			output.push({
+				lineType: "DocLineBanner",
+				bannerType: BannerType.Error,
+				showTriangle: true,
+				text: new TypedStringSingle({content: e, type: StringType.Normal})
+			})
+		})
 	}
 
 	private computeVariables(variables?: MapOf<number>): void {
@@ -414,65 +471,6 @@ export class RouteEngine{
 	// 		}
 	// 	}
 
-	// 	if(data.notes){
-	// 		props.notes = textLikeToTextBlock(data.notes);
-	// 		let extra = 0;
-	// 		if(data.icon){
-	// 			extra++;
-	// 		}
-	// 		let j = i+1;
-	// 		if(data.type === "split"){
-	// 			props.notesRowSpan = 1 + extra;
-	// 		}else{
-	// 			for(;j<input.length;j++){
-	// 				if(input[j].type === "section" || input[j].type === "split" || input[j].notes){
-	// 					break;
-	// 				}
-	// 				if(input[j].icon){
-	// 					extra++;
-	// 				}
-	// 			}
-	// 			props.notesRowSpan = j - i + extra;
-	// 		}
-	// 		if(j >= input.length || !(input[j].notes || input[j].type === "section")){
-	// 			props.notesClass = "detail-box detail-box-bottom-border";
-	// 		}else{
-	// 			props.notesClass = "detail-box";
-	// 		}
-	// 		props.hasNotes = true;
-	// 		this.noDetailYet = false;
-	// 	}else if(this.noDetailYet){
-	// 		props.notes = stringToText("");
-	// 		props.notesRowSpan = 1;
-	// 		if(data.icon){
-	// 			props.notesEmptySecondRow = true;
-	// 		}
-	// 	}
-
-	// 	if(data.image){
-	// 		props.hasImage = true;
-	// 		props.image = data.image;
-	// 		let extra = 0;
-	// 		if(data.icon){
-	// 			extra++;
-	// 		}
-	// 		let j = i+1;
-	// 		for(;j<input.length;j++){
-	// 			if(input[j].type === "section" || input[j].image){
-	// 				break;
-	// 			}
-	// 			if(input[j].icon){
-	// 				extra++;
-	// 			}
-	// 		}
-	// 		props.imageRowSpan = j - i + extra;
-	// 		this.noImageYet = false;
-	// 	}else if(this.noImageYet){
-	// 		props.imageRowSpan = 1;
-	// 		if(data.icon){
-	// 			props.imageEmptySecondRow = true;
-	// 		}
-	// 	}
 
 	// 	output.push(props);
 	// 	this.lineNumber++;
@@ -481,92 +479,53 @@ export class RouteEngine{
 	// 	}
 	// }
 
-	// private processVariableChange(variableChange: {[key: string]: number}): void {
-	// 	for(const key in variableChange){
-	// 		if(!(key in this.variables)){
-	// 			this.variables[key] = 0;
-	// 		}
-	// 		this.variables[key]+=variableChange[key];
-	// 	}
+
+
+	private processAbilityUsage(abilityName: "gale" | "fury", useCount: number, error: Set<string>): string{
+		let recharge = BASE_ABILITY_RECHARGE[abilityName];
+		if(this.abilityUpgrade[abilityName]){
+			recharge /= 3;
+		}
+		if(this.isInHyruleCastle){
+			recharge /= 3;
+		}
+		let text = "?";
 		
-	// }
+		if(this.abilityCount[abilityName] === 0){
+			if(this.abilityRechargeTime[abilityName] < recharge){
+				error.add(`Error: Ability might not be recharged. Time needed to recharge is ${recharge}. Estimated time passed is ${this.abilityRechargeTime[abilityName]}`);
+			}
+			this.abilityRechargeTime[abilityName] = 0;
+			this.abilityCount[abilityName] = 3;
+		}
 
-	// private processAbilityUsage(ability: AbilityUsage, error: Set<EngineError>): [string, string]{
-	// 	const galeRecharge = this.enableGalePlus ? GALE_PLUS_RECHARGE : GALE_RECHARGE;
-	// 	const furyRecharge = this.enableFuryPlus ? FURY_PLUS_RECHARGE : FURY_RECHARGE;
-	// 	let galeText = "?";
-	// 	let furyText = "?";
+		if(useCount > this.abilityCount[abilityName]){
+			error.add(`Error: Doesn't have enough ${abilityName}. Need ${useCount}, has ${this.abilityCount[abilityName]}`);
+
+		}else{
+			text = this.getAbilityChangeText(this.abilityCount[abilityName], useCount);
+			this.abilityCount[abilityName] -= useCount;
+			if(this.abilityCount[abilityName] === 0){
+				this.abilityRechargeTime[abilityName] = 0;
+			}
+		}
 		
-	// 	if(ability.gale){
-	// 		if(this.gale === 0){
-	// 			if(ability.gale && this.galeRechargeTime < galeRecharge){
-	// 				error.add("GaleRecharge");
-	// 			}
-	// 			this.galeRechargeTime = 0;
-	// 			this.gale = 3;
-	// 		}
-	// 		if(ability.gale > this.gale){
-	// 			error.add("GaleCount");
-	// 		}else{
-	// 			galeText = this.getAbilityChangeText(this.gale, ability.gale);
-	// 			this.gale -= ability.gale;
-	// 			if(this.gale === 0){
-	// 				this.galeRechargeTime = 0;
-	// 			}
-	// 		}
-	// 	}
-	// 	if(ability.fury){
-	// 		if(this.fury === 0){
-	// 			if(ability.fury && this.furyRechargeTime < furyRecharge){
-	// 				error.add("FuryRecharge");
-	// 			}
-	// 			this.furyRechargeTime = 0;
-	// 			this.fury = 3;
-	// 		}
-	// 		if(ability.fury > this.fury){
-	// 			error.add("FuryCount");
-	// 		}else{
-	// 			furyText = this.getAbilityChangeText(this.fury, ability.fury);
-	// 			this.fury -= ability.fury;
-	// 			if(this.fury === 0){
-	// 				this.furyRechargeTime = 0;
-	// 			}
-	// 		}
-	// 	}
+		return text;
+	}
 
-	// 	return [galeText, furyText];
+	private estimateTime(splitType: SplitType, text: TypedString): number {
+		return 0; //TODO
+	}
 
-	// }
+	private processAbilityRecharge(time: number): void {
 
-	// private processStepOrSplit(type: "step" | "split" | undefined | string, props: InstructionData): void{
-	// 	if(type === "step"){
-	// 		props.stepNumber = this.step;
-	// 		this.incStep();
-	// 		props.stepperClassName="indicator-color-step";
-			
-	// 	}else if(type === "split"){
-	// 		this.step = "1";
-	// 		props.stepperClassName="indicator-color-split";
-	// 		this.noDetailYet = true;
-	// 	}else{
-	// 		props.stepperClassName="indicator-color-none";
-	// 	}
-	// }
-
-	// private processAbilityRecharge(isStep: boolean, timeOverride?: number): void {
-	// 	let time = 0;
-	// 	if(timeOverride){
-	// 		time = timeOverride;
-	// 	}else if(isStep){
-	// 		time = STEP_ESTIMATE;
-	// 	}
-	// 	if(this.gale === 0){
-	// 		this.galeRechargeTime += time;
-	// 	}
-	// 	if(this.fury === 0){
-	// 		this.furyRechargeTime += time;
-	// 	}
-	// }
+		if(this.abilityCount.gale === 0){
+			this.abilityRechargeTime.gale += time;
+		}
+		if(this.abilityCount.fury === 0){
+			this.abilityRechargeTime.fury += time;
+		}
+	}
 
 	// private processShrineChange(shrineChange: number, text: TextLike, props: InstructionData): void{
 	// 	this.shrineCount += shrineChange;
@@ -635,50 +594,59 @@ export class RouteEngine{
 	// 	return String(mod100);
 	// }
 
-	// private getAbilityChangeText(current: number, use: number): string{
-	// 	if(current === 3){
-	// 		if(use === 1){
-	// 			return "1";
-	// 		}
-	// 		return `1-${use}`;
-	// 	}
-	// 	if(current === 2){
-	// 		if(use === 1){
-	// 			return "2";
-	// 		}
-	// 		return "2-3";
-	// 	}
-	// 	return "3";
-	// }
+	private getAbilityChangeText(current: number, use: number): string{
+		if(current === 3){
+			if(use === 1){
+				return "1";
+			}
+			return `1-${use}`;
+		}
+		if(current === 2){
+			if(use === 1){
+				return "2";
+			}
+			return "2-3";
+		}
+		return "3";
+	}
 
-	// private applyAbilityTextBlock(textBlock: TextBlock | undefined, furyText: string, galeText: string, errorOut: Set<EngineError>): TextBlock {
-	// 	if(!textBlock){
-	// 		return [];
-	// 	}
-	// 	if(Array.isArray(textBlock)){
-	// 		return textBlock.map(t=>this.applyAbilityText(t, furyText, galeText, errorOut));
-	// 	}
-	// 	return this.applyAbilityText(textBlock, furyText, galeText, errorOut);
-	// }
+	private applyAbilityTextBlockOptional(textBlock: TypedString | undefined | null, furyText: string, galeText: string, errorOut: Set<string>): TypedString | undefined {
+		if(!textBlock){
+			return undefined;
+		}
+		return this.applyAbilityTextBlock(textBlock, furyText, galeText, errorOut);
+	}
 
-	// private applyAbilityText(text: Text, furyText: string, galeText: string, errorOut: Set<EngineError>): Text {
-	// 	if(text.colorClass === "color-fury"){
-	// 		if(furyText==="?"){
-	// 			errorOut.add("FuryText");
-	// 		}
-	// 		return {
-	// 			...text,
-	// 			content: "FURY "+furyText
-	// 		};
-	// 	}else if(text.colorClass === "color-gale"){
-	// 		if(galeText==="?"){
-	// 			errorOut.add("GaleText");
-	// 		}
-	// 		return {
-	// 			...text,
-	// 			content: "GALE "+galeText
-	// 		};
-	// 	}
-	// 	return text;
-	// }
+	private applyAbilityTextBlock(textBlock: TypedString, furyText: string, galeText: string, errorOut: Set<string>): TypedString {
+		//console.log(textBlock);
+		const newBlocks = textBlock.map(({content, type})=>{
+			if(type === StringType.Fury){
+				if(furyText==="?"){
+					errorOut.add("Error: Text include fury but the number of furies is not specified");
+				}
+				return new TypedStringSingle({
+					content: "FURY "+furyText,
+					type
+				});
+			}
+			if(type === StringType.Gale){
+				if(galeText==="?"){
+					errorOut.add("Error: Text include gale but the number of gales is not specified");
+				}
+				console.log(galeText);
+				return new TypedStringSingle({
+					content: "GALE "+galeText,
+					type
+				});
+			}
+			return new TypedStringSingle({
+				content,
+				type
+			});
+		});
+		if(newBlocks.length === 1){
+			return newBlocks[0];
+		}
+		return new TypedStringBlock(newBlocks);
+	}
 }

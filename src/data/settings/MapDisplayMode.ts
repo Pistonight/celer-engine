@@ -6,7 +6,7 @@ export interface MapDisplayMode extends SettingItem<MapDisplayMode>{
     mapSize: number
 }
 
-export const MapDisplayModes = <ReadonlyMapOf<MapDisplayMode>>{
+export const MapDisplayModes = {
     Auto: {
         name: "Auto",
         mapSize: 0,
@@ -32,7 +32,7 @@ export const MapDisplayModes = <ReadonlyMapOf<MapDisplayMode>>{
         mapSize: 0,
         next: ()=>MapDisplayModes.Auto
     },
-};
+} as ReadonlyMapOf<MapDisplayMode>;
 
 
 export const MapDisplayModeStorage = new SettingStorage("MapDisplayMode", MapDisplayModes, MapDisplayModes.Auto);

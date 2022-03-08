@@ -9,27 +9,36 @@ export class Compiler {
     private modules: CompilerPresetModule[] = getModules();
 
     public compile(version: string, sections: RouteSection[]): RouteAssemblySection[] {
-        const compiled = this.compileSections(sections);
-        if(version !== TARGET_VERSION){
-            compiled.splice(0, 0, {
-                route: [{
-                    text: StringParser.parseStringBlockSimple("Compiler Version Mismatch Warning: The compiler version is "+TARGET_VERSION+", but the loaded route was compiled under version "+version+". Please consider upgrading to the latest compiler at https://github.com/iTNTPiston/celer-compiler if you see any unexpected issues."),
-                    bannerTriangle: false,
-                    bannerType: BannerType.Warning ,
+        try{
+            const compiled = this.compileSections(sections);
+            if(version !== TARGET_VERSION){
+                compiled.splice(0, 0, {
+                    route: [{
+                        text: StringParser.parseStringBlockSimple("Compiler Version Mismatch Warning: The compiler version is "+TARGET_VERSION+", but the loaded route was compiled under version "+version+". Please consider upgrading to the latest compiler at https://github.com/iTNTPiston/celer-compiler if you see any unexpected issues."),
+                        bannerTriangle: false,
+                        bannerType: BannerType.Warning ,
+                        splitType: SplitType.None
+                    }]
+                })
+            }
+            //put 20 empty lines at the end
+            const emptyLines = []
+            for(let i = 0; i<20;i++){
+                emptyLines.push({
+                    text: StringParser.parseStringBlockSimple(""),
                     splitType: SplitType.None
-                }]
-            })
-        }
-        //put 20 empty lines at the end
-        const emptyLines = []
-        for(let i = 0; i<20;i++){
-            emptyLines.push({
-                text: StringParser.parseStringBlockSimple(""),
-                splitType: SplitType.None
-            });
-        }
-        compiled.push({route: emptyLines});
-        return compiled;
+                });
+            }
+            compiled.push({route: emptyLines});
+            return compiled;
+        }catch(e){
+			console.error(e);
+			return [{
+                route:[this.makeCompilerError("The compiler has encountered an error. Please check console logs.")]
+            }];
+		}
+        
+        
     }
 
     private compileSections(sections: RouteSection[]): RouteAssemblySection[] {
@@ -157,6 +166,14 @@ export class Compiler {
         if(extend["hide-icon-on-map"]){
             data.hideIconOnMap = extend["hide-icon-on-map"];
         }
+        if(extend.gale){
+            data.gale = extend.gale;
+        }
+        if(extend.fury){
+            data.fury = extend.fury;
+        }
+       
+      
         if(extend["split-type"]){
             const customSplitTypeString = extend["split-type"];
             data.splitType = SplitType.None;
@@ -165,10 +182,12 @@ export class Compiler {
                 data.splitType = SplitType[customSplitTypeString as keyof typeof SplitType];
             }
         }
-        if(extend.movements && Array.isArray(extend.movements)){
+
+        // Doing minimal error checking here, since the bundler is supposed to check the errors
+        if(extend.movements){
             const movements = extend.movements.map(this.processExtendMovement.bind(this)).filter(m=>m);
             data.movements = movements as Movement[];
-        }else if(extend.coord && Array.isArray(extend.coord) && extend.coord.length >= 2){
+        }else if(extend.coord){
             const x = extend.coord[0];
             let z = extend.coord[1];
             if(extend.coord.length === 3){
@@ -181,18 +200,15 @@ export class Compiler {
             }]
         }
         if(extend["var-change"]){
-            // Make sure var change is a map
             const varMap = extend["var-change"];
-            if(typeof varMap === "object" && !Array.isArray(varMap)){
-                const validatedMap: MapOf<number> = {};
-                for(const key in varMap){
-                    const num = Number(varMap[key]);
-                    if(num){
-                        validatedMap[key]=num;
-                    }
+            const validatedMap: MapOf<number> = {};
+            for(const key in varMap){
+                const num = Number(varMap[key]);
+                if(num){
+                    validatedMap[key]=num;
                 }
-                data.variableChange = validatedMap;
             }
+            data.variableChange = validatedMap;
         }
     }
 

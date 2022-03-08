@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "crypto";
 import { Consumer } from "data/util";
 
 type TypedStringData = {
@@ -22,7 +23,7 @@ export class TypedStringSingle implements TypedString {
     }
 
     public isEmpty(): boolean {
-        return this.type !== StringType.Fury && this.type !== StringType.Gale;
+        return this.type !== StringType.Fury && this.type !== StringType.Gale && !!this.content;
     }
 
     public toString(): string {
