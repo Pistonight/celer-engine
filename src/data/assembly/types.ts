@@ -30,12 +30,12 @@ export type RouteAssembly = { //RouteAssembly
 	gale?: number,
 	fury?: number
 	// Override the time this step takes, for calculating ability recharge
-	//timeOverride?: number,
+	timeOverride?: number,
 
 	// // Suppress error type
 	// suppressError?: EngineError[],
 	// // Engine command
-	// command?: EngineCommand[],
+	commands?: RouteCommand[],
 	movements?: Movement[],
 	lineColor?: string,
 	hideIconOnMap?: boolean,
@@ -76,3 +76,8 @@ export enum SplitType {
     UserDefined
 }
 
+export enum RouteCommand {
+    EnableFuryPlus,
+    EnableGalePlus,
+    ToggleHyruleCastle
+}

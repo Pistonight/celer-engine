@@ -38,7 +38,7 @@ export const DocFrame: React.FC<DocFrameProps> = ({docLines})=>{
     return (
         <div ref={docFrameRef} className={styles.docFrame} onScroll={(e)=>{
             const pos = (e.target as any).scrollTop || 0;
-            if(Math.abs(pos - scrollPos) >= 100){
+            if(Math.abs(pos - scrollPos) >= 300){
                 setScrollPos(pos);
                 LocalStorageWrapper.store(SCROLL_POS_KEY, pos);
             }

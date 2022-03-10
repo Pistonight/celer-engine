@@ -119,6 +119,20 @@ class WarpModule implements CompilerPresetModule {
                         }]
                     };
                     break;
+                case "_SOR":
+                    module = {
+                        text: new TypedStringSingle({
+                            content: "SoR",
+                            type: StringType.Location,
+                        }),
+                        icon: "warp",
+                        splitType: SplitType.Warp,
+                        movements: [{
+                            to: {x: -1096.05, z: 1879.34},
+                            isAway: false,
+                            isWarp: true,
+                        }]
+                    };
             }
             if(!module){
                 if(location.startsWith(PREFIX) && location.endsWith(SUFFIX)){

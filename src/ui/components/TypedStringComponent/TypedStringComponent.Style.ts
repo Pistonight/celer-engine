@@ -33,11 +33,11 @@ export const TypedStringComponentStyle =({colors}: ComputeStyleInputs)=>( <const
     },
     stringGaleColor: {
         backgroundColor: colors.stringGaleColor,
-        color: colors.docTextBackground
+        color: "#000000"
     },
     stringFuryColor: {
         backgroundColor: colors.stringFuryColor,
-        color: colors.docTextBackground
+        color: "#000000"
     },
 
     stringItemColorNotes: {

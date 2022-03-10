@@ -11,6 +11,7 @@ import { BannerType, RouteAssembly, RouteAssemblySection, SplitType } from "data
 import { defaultSplitSetting, SplitTypeSetting } from "data/settings";
 import { MapOf } from "data/util";
 import { StringType, TypedString, TypedStringBlock, TypedStringSingle } from "data/assembly";
+import { RouteCommand } from "data/assembly";
 
 //Recharge time in seconds
 const BASE_ABILITY_RECHARGE = {
@@ -146,6 +147,7 @@ export class RouteEngine{
 
 	private computeAssembly(data: RouteAssembly, output: DocLine[]): void {
 		this.computeVariables(data.variableChange);
+		this.processCommands(data.commands);
 		if(data.bannerType !== undefined){
 			output.push({
 				lineType: "DocLineBanner",
@@ -173,7 +175,7 @@ export class RouteEngine{
 			furyText = this.processAbilityUsage("fury", data.fury, error);
 		}
 
-		const time = this.estimateTime(data.splitType, data.text);
+		const time = data.timeOverride ?? this.estimateTime(!!data.isStep, data.splitType, data.text);
 		this.processAbilityRecharge(time);
 
 		if(data.isStep){
@@ -284,7 +286,7 @@ export class RouteEngine{
 				showTriangle: true,
 				text: new TypedStringSingle({content: e, type: StringType.Normal})
 			})
-		})
+		});
 	}
 
 	private computeVariables(variables?: MapOf<number>): void {
@@ -513,8 +515,26 @@ export class RouteEngine{
 		return text;
 	}
 
-	private estimateTime(splitType: SplitType, text: TypedString): number {
-		return 0; //TODO
+	private estimateTime(isStep: boolean, splitType: SplitType, text: TypedString): number {
+		// Count how many .dir blocks. Usually they are wbs and takes 10 seconds-ish
+		let wbCount = 0;
+		text.forEach(({type})=>{
+			if (type === StringType.Direction){
+				wbCount++;
+			}
+		});
+
+		let estimate = wbCount * 14;
+
+		if(splitType !== SplitType.None){
+			estimate += 3; // Add 3 seconds of running
+		}
+
+		if(isStep){
+			estimate += 3; // Add 3 seconds to reposition/run + aim before wb
+		}
+
+		return estimate;
 	}
 
 	private processAbilityRecharge(time: number): void {
@@ -525,6 +545,42 @@ export class RouteEngine{
 		if(this.abilityCount.fury === 0){
 			this.abilityRechargeTime.fury += time;
 		}
+	}
+
+	private processCommands(commands?: RouteCommand[]): void {
+		if(!commands){
+			return;
+		}
+		if(this.hasCommand(RouteCommand.ToggleHyruleCastle, commands)){
+			if(this.isInHyruleCastle){
+				this.updateRechargeTimeForDowngrade("fury");
+				this.updateRechargeTimeForDowngrade("gale");
+			}else{
+				this.updateRechargeTimeForUpgrade("fury");
+				this.updateRechargeTimeForUpgrade("gale");
+			}
+			this.isInHyruleCastle = !this.isInHyruleCastle;
+		}
+		if(this.hasCommand(RouteCommand.EnableFuryPlus, commands)){
+			if(!this.abilityUpgrade.fury){
+				this.updateRechargeTimeForUpgrade("fury");
+				this.abilityUpgrade.fury = true;
+			}
+		}
+		if(this.hasCommand(RouteCommand.EnableGalePlus, commands)){
+			if(!this.abilityUpgrade.gale){
+				this.updateRechargeTimeForUpgrade("gale");
+				this.abilityUpgrade.gale = true;
+			}
+		}
+	}
+
+	private updateRechargeTimeForUpgrade(ability: "gale" | "fury"): void{
+		this.abilityRechargeTime[ability] /= 3;
+	}
+
+	private updateRechargeTimeForDowngrade(ability: "gale" | "fury"): void {
+		this.abilityRechargeTime[ability] *= 3;
 	}
 
 	// private processShrineChange(shrineChange: number, text: TextLike, props: InstructionData): void{
@@ -568,12 +624,9 @@ export class RouteEngine{
 		}
 	}
 
-	// private hasCommand(find: EngineCommand, commands?: EngineCommand[]): boolean {
-	// 	if(!commands){
-	// 		return false;
-	// 	}
-	// 	return commands.filter(e=>e===find).length>0;
-	// }
+	private hasCommand(find: RouteCommand, commands: RouteCommand[]): boolean {
+		return commands.filter(e=>e===find).length>0;
+	}
 
 	// private getKorokCountLastTwoDigits(): string {
 	// 	return this.getLastTwoDigits(this.korokCount);
@@ -618,7 +671,6 @@ export class RouteEngine{
 	}
 
 	private applyAbilityTextBlock(textBlock: TypedString, furyText: string, galeText: string, errorOut: Set<string>): TypedString {
-		//console.log(textBlock);
 		const newBlocks = textBlock.map(({content, type})=>{
 			if(type === StringType.Fury){
 				if(furyText==="?"){
@@ -633,7 +685,6 @@ export class RouteEngine{
 				if(galeText==="?"){
 					errorOut.add("Error: Text include gale but the number of gales is not specified");
 				}
-				console.log(galeText);
 				return new TypedStringSingle({
 					content: "GALE "+galeText,
 					type

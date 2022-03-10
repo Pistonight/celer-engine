@@ -1,8 +1,8 @@
 // Korok::ID
 // 900 koroks
 import { MapOf } from "data/util";
-import { StringType, TypedString, TypedStringSingle } from "../text";
-import { RouteAssembly, SplitType } from "../types";
+import { StringParser, StringType, TypedString, TypedStringSingle } from "../text";
+import { Movement, RouteAssembly, SplitType } from "../types";
 import { CompilerPresetModule } from "./Module";
 
 export enum KorokType {
@@ -278,7 +278,9 @@ class KorokModule implements CompilerPresetModule {
         this.addKorok("E14", [1725.3494873046875,607.0525512695312,-2553.939453125], KorokType.Race, "SQ");
         this.addKorok("E15", [1593.87939453125,543.9135131835938,-2475.24951171875], KorokType.Confetti, "Inside agreeGe");
         this.addKorok("E16", [1865.5545654296875,533.9346923828125,-2465.0439453125], KorokType.Confetti, "Top of skeleton");
-        this.addKorok("E17", [1867.8145751953125,511.0074768066406,-2400.638427734375], KorokType.Race, "Glide over");
+        this.addKorok("E17", [1867.8145751953125,511.0074768066406,-2400.638427734375], KorokType.Race, "Glide over", [
+            [1915.68, -2382.10]
+        ]);
         this.addKorok("E18", [1647.2315673828125,521.044677734375,-2244.460693359375], KorokType.RockCircle, "GG over");
         this.addKorok("E19", [1537.8502197265625,505.3825378417969,-2091.503173828125], KorokType.Balloon,"High up");
         this.addKorok("E20", [2019.416015625,557.7247314453125,-2172.8994140625], KorokType.BoulderGolf, "Can go after bomb");
@@ -318,7 +320,13 @@ class KorokModule implements CompilerPresetModule {
         this.addKorok("F09", [2099.720947265625,363.66046142578125,2625.572265625], KorokType.Basketball, "2 STS hits");
         this.addKorok("F10", [1373.0001220703125,220.29400634765625,2749.046142578125], KorokType.FlowerChase, "In cave");
         this.addKorok("F11", [1936.5281982421875,492.9896240234375,2778.5439453125], KorokType.LiftRock, "Peak");
-        this.addKorok("F12", [2103.915283203125,422.5005187988281,2726.0986328125], KorokType.FlowerChase);
+        this.addKorok("F12", [2103.915283203125,422.5005187988281,2726.0986328125], KorokType.FlowerChase, "", [
+            [2042.4013992433693,2660.5],
+            [2053.8961858700295,2705.5],
+            [2092.8785057343575,2692],
+            [2115.368305656086,2711],
+            [2102.8739723662366,2725.5]
+        ]);
         this.addKorok("F13", [2284.272705078125,287.53778076171875,2659.9716796875], KorokType.LiftRock, "Under tree");
         this.addKorok("F14", [2874.914794921875,299.739990234375,2683.368408203125], KorokType.LilyPads, "No Drown");
         this.addKorok("F15", [1325.560791015625,296.66778564453125,3008.677734375], KorokType.LightChase);
@@ -639,7 +647,10 @@ class KorokModule implements CompilerPresetModule {
         this.addKorok("N36", [2884.091552734375,160.92068481445312,1765.02685546875], KorokType.AcornTree);
         this.addKorok("N37", [3178.81201171875,177.00070190429688,1607.3035888671875], KorokType.LilyPads, "C ryo block DIVE");
         this.addKorok("N38", [3166.323974609375,193.83096313476562,1828.8909912109375], KorokType.Balloon);
-        this.addKorok("N39", [3525.98388671875,454.0448303222656,1710.623291015625], KorokType.Race, ".dir(W Round First");
+        this.addKorok("N39", [3525.98388671875,454.0448303222656,1710.623291015625], KorokType.Race, ".dir(W) Round First", [
+            [3735.97, 1686.96],
+            [3525.98388671875,1710.623291015625]
+        ]);
         this.addKorok("N40", [4615.14306640625,106.21733093261719,1915.4744873046875], KorokType.LiftRockSlab);
         this.addKorok("N41", [3029.03564453125,114.80000305175781,2017.677001953125], KorokType.LilyPads, "Cryo block");
         this.addKorok("N42", [3475.63916015625,278.69317626953125,1916.26123046875], KorokType.LiftRockTree, "Next to blue flame");
@@ -659,7 +670,19 @@ class KorokModule implements CompilerPresetModule {
         this.addKorok("N56", [4541.93212890625,109.80001831054688,2405.6396484375], KorokType.LilyPads, "Cryo block wb");
         this.addKorok("N57", [4662.7119140625,169.59861755371094,2376.256103515625], KorokType.FlowerChase);
         this.addKorok("N58", [3148.7197265625,277.1993408203125,2402.7802734375], KorokType.BlockPuzzle);
-        this.addKorok("N59", [3420.94384765625,340.356201171875,2390.287109375], KorokType.FlowerChase, "6 before going right");
+        this.addKorok("N59", [3420.94384765625,340.356201171875,2390.287109375], KorokType.FlowerChase, "6 before going right", [
+            [3372.9499578534123,2302],
+            [3392.4461460492766,2304.5],
+            [3420.940574950926,2319],
+            [3443.436176715386,2343.5],
+            [3459.9329513426565,2342.5],
+            [3472.930410139901,2346.5],
+            [3470.4308988327393,2365],
+            [3454.933928728333,2383],
+            [3442.936274453954,2391.5],
+            [3426.9394020881155,2390],
+            [3420.94, 2390.29]
+        ]);
         this.addKorok("N60", [3687.95947265625,107.3201675415039,2413.49267578125], KorokType.Basketball, "Cryo GG Throw");
         this.addKorok("N61", [3516.11767578125,160.20758056640625,2628.381591796875], KorokType.RockCircle);
         this.addKorok("N62", [4110.9775390625,111.15515899658203,2588.167724609375], KorokType.FlowerChase, "Start on beach");
@@ -670,7 +693,12 @@ class KorokModule implements CompilerPresetModule {
         this.addKorok("P01", [-822.6375122070312,171.23388671875,1546.9208984375], KorokType.LiftRock, "Under rocks");
         this.addKorok("P02", [-769.883056640625,175.22134399414062,1574.2252197265625], KorokType.TreeStump);
         this.addKorok("P03", [-1334.809326171875,232.67037963867188,1675.89990234375], KorokType.BlockPuzzle);
-        this.addKorok("P04", [-965.4801025390625,187.20907592773438,1625.696533203125], KorokType.FlowerChase, "Middle of log");
+        this.addKorok("P04", [-965.4801025390625,187.20907592773438,1625.696533203125], KorokType.FlowerChase, "Middle of log", [
+            [-997.25,1662],
+            [-988.25,1651],
+            [-979,1646.5],
+            [-978,1633.75]
+        ]);
         this.addKorok("P05", [-853.2324829101562,181.4210205078125,1671.2191162109375], KorokType.LiftRockLeaves);
         this.addKorok("P06", [-953.0681762695312,201.55020141601562,1721.4840087890625], KorokType.LiftRock, "Top of hill");
         this.addKorok("P07", [-1503.422119140625,297.22650146484375,1920.173583984375], KorokType.IceBlock);
@@ -826,18 +854,20 @@ class KorokModule implements CompilerPresetModule {
         this.addKorok("W22", [-1399.4241943359375,220.2027130126953,2378.205322265625], KorokType.Balloon);
         this.addKorok("W23", [-2066.654052734375,288.819580078125,2397.044677734375], KorokType.Race, "Drop down finish race");
         this.addKorok("W24", [-2059.884521484375,306.7729187011719,2420.09912109375], KorokType.LiftRock, "On platform");
-        this.addKorok("W25", [-4876.90771484375,153.29457092285156,2469.673583984375], KorokType.MatchCactus, "Shoot from statue");
+        this.addKorok("W25", [-4876.90771484375,153.29457092285156,2469.673583984375], KorokType.MatchCactus);
         this.addKorok("W26", [-1809.821044921875,162.5113525390625,2459.625], KorokType.BlockPuzzle);
         this.addKorok("W27", [-1615.96435546875,193.37147521972656,2447.328857421875], KorokType.Balloon, "2 Bomb Arrows (No BT)");
         this.addKorok("W28", [-4373.89794921875,165.13348388671875,2587.056640625], KorokType.Race, "On some pillars");
-        this.addKorok("W29", [-3751.843505859375,157.35833740234375,2531.623779296875], KorokType.Race, "SQ DEFUSE");
+        this.addKorok("W29", [-3751.843505859375,157.35833740234375,2531.623779296875], KorokType.Race, "SQ DEFUSE", [
+            [-3757.10, 2445.96]
+        ]);
         this.addKorok("W30", [-2594.754638671875,284.72015380859375,2539.869384765625], KorokType.BlockPuzzle);
         this.addKorok("W31", [-2358.780029296875,476.12371826171875,2554.533447265625], KorokType.LiftRock);
         this.addKorok("W32", [-2305.081787109375,486.2545166015625,2561.3642578125], KorokType.BlockPuzzle);
         this.addKorok("W33", [-2207.69189453125,432.16876220703125,2550.62109375], KorokType.Balloon, "Under bridge");
         this.addKorok("W34", [-1935.3447265625,452.79669189453125,2673.501708984375], KorokType.RockCircle);
         this.addKorok("W35", [-2628.114501953125,168.49464416503906,2751.20556640625], KorokType.Balloon, "Between arms. Shoot midair");
-        this.addKorok("W36", [-4224.869140625,154.65057373046875,2738.07373046875], KorokType.MatchCactus, "Shoot midair");
+        this.addKorok("W36", [-4224.869140625,154.65057373046875,2738.07373046875], KorokType.MatchCactus);
         this.addKorok("W37", [-3107.27783203125,135.38699340820312,2881.241455078125], KorokType.FlowerChase, "On skeleton");
         this.addKorok("W38", [-2298.699951171875,352.56158447265625,2850.02001953125], KorokType.LiftRock, "On pillar");
         this.addKorok("W39", [-2019.6982421875,375.79608154296875,2884.23095703125], KorokType.BlockPuzzle);
@@ -852,7 +882,7 @@ class KorokModule implements CompilerPresetModule {
         this.addKorok("W48", [-2172.5087890625,185.72760009765625,3200.395751953125], KorokType.BlockPuzzle);
         this.addKorok("W49", [-1926.302734375,264.6315002441406,3241.9990234375], KorokType.BlockPuzzle);
         this.addKorok("W50", [-1922.2257080078125,332.9751281738281,3279.693359375], KorokType.LiftRock, "Top of big pillar");
-        this.addKorok("W51", [-4862.19580078125,129.3501739501953,3260.96533203125], KorokType.MatchCactus, "Stasis left");
+        this.addKorok("W51", [-4862.19580078125,129.3501739501953,3260.96533203125], KorokType.MatchCactus);
         this.addKorok("W52", [-2636.19677734375,101.8104019165039,3302.57421875], KorokType.BlockPuzzle, "Inside skull");
         this.addKorok("W53", [-1379.1700439453125,592.9069213867188,3328.080078125], KorokType.LiftRock, "On pillar");
         this.addKorok("W54", [-1526.9757080078125,397.5132141113281,3405.892822265625], KorokType.LiftRock);
@@ -862,13 +892,15 @@ class KorokModule implements CompilerPresetModule {
         this.addKorok("W58", [-1996.600341796875,301.55316162109375,3619.667236328125], KorokType.Race, ".dir(S) Turn");
         this.addKorok("W59", [-1611.5152587890625,411.2915344238281,3678.327392578125], KorokType.IceBlock, "3 Fire Arrows");
         this.addKorok("W60", [-1357.0343017578125,479.65753173828125,3671.9404296875], KorokType.IceBlock, "3 Fire Arrows");
-        this.addKorok("W61", [-4347.89697265625,142.88563537597656,3713.184326171875], KorokType.MatchCactus, "STS (One hand weapon)");
+        this.addKorok("W61", [-4347.89697265625,142.88563537597656,3713.184326171875], KorokType.MatchCactus);
         this.addKorok("W62", [-3031.62548828125,181.0055389404297,3754.590576171875], KorokType.RockCircle);
-        this.addKorok("W63", [-2448.41162109375,134.73599243164062,3751.939697265625], KorokType.Race);
+        this.addKorok("W63", [-2448.41162109375,134.73599243164062,3751.939697265625], KorokType.Race, "", [
+            [-2591.20, 3543.36]
+        ]);
         this.addKorok("W64", [-1351.4581298828125,448.56793212890625,3770.79345703125], KorokType.RockCircle);
         this.addKorok("W65", [-4859.177734375,172.69601440429688,3832.94775390625], KorokType.Confetti, "Top of skeleton");
         this.addKorok("W66", [-4160.32666015625,133.13693237304688,3826.202392578125], KorokType.LiftRock);
-        this.addKorok("W67", [-3286.43408203125,169.88096618652344,3787.150634765625], KorokType.MatchCactus, "Shoot midair");
+        this.addKorok("W67", [-3286.43408203125,169.88096618652344,3787.150634765625], KorokType.MatchCactus);
         this.addKorok("W68", [-2547.4267578125,141.4355010986328,3951.93017578125], KorokType.LiftRock, "On pillar");
         this.addKorok("X01", [-308.7722473144531,132.6443634033203,-1166.0054931640625], KorokType.LiftRock, "On ledge");
         this.addKorok("X02", [-147.51226806640625,188.97129821777344,-1159.79443359375], KorokType.LilyPads, "No Drown");
@@ -918,7 +950,17 @@ class KorokModule implements CompilerPresetModule {
         this.addKorok("Z21", [1088.531494140625,164.78854370117188,-215.89456176757812], KorokType.RockCircle, "Near water");
         this.addKorok("Z22", [2517.501220703125,182.5040283203125,-212.48138427734375], KorokType.LiftRock, "On hill");
         this.addKorok("Z23", [2746.14794921875,237.58753967285156,-176.40203857421875], KorokType.Well);
-        this.addKorok("Z24", [3083.23876953125,363.92437744140625,-167.68960571289062], KorokType.FlowerChase, "Stay Grounded");
+        this.addKorok("Z24", [3083.23876953125,363.92437744140625,-167.68960571289062], KorokType.FlowerChase, "Stay Grounded", [
+            [2984.25,-177],
+            [3014.75,-182.5],
+            [3030.75,-170.25],
+            [3047.75,-165.75],
+            [3058.5,-158],
+            [3069.5,-157.75],
+            [3083.25,-159.75],
+            [3090.25,-161.25],
+            [3084.5,-166]
+        ]);
         this.addKorok("Z25", [3291.971923828125,295.3833923339844,-261.12060546875], KorokType.LiftRock, "On ledge");
         this.addKorok("Z26", [3527.287353515625,395.3050537109375,-276.76385498046875], KorokType.LiftRock, "Peak");
         this.addKorok("Z27", [4080.40625,421.47918701171875,-216.78250122070312], KorokType.BlockPuzzle);
@@ -975,25 +1017,24 @@ class KorokModule implements CompilerPresetModule {
         return this.map[id]();
     }
 
-    private addKorok(id: string,  coord: [number, number, number], type: KorokType, comment?: string): void{
+    private addKorok(id: string,  coord: [number, number, number], type: KorokType, comment?: string, movement?: number[][]): void{
         this.map[id] = () => ({
             text: new TypedStringSingle({
                 content: id+" "+type,
                 type: StringType.Npc
             }),
-            comment: new TypedStringSingle({
-                content: comment || "",
-                type: StringType.Normal
-            }),
+            comment: StringParser.parseStringBlockSimple(comment || ""),
             icon: mapKorokToImage(type),
             splitType: SplitType.Korok,
-            movements: [{
-                to: {x: coord[0], z: coord[2]},
+            movements: (movement ?[...movement, [coord[0], coord[2]]]: [[coord[0], coord[2]]]).map(([x, z])=>({
+                to: {x, z},
                 isAway: false,
                 isWarp: false,
-                
-            }]
+            })),
+            timeOverride: mapKorokToEstimate(type),
+
         });
+        
     }
 
 }
@@ -1046,6 +1087,57 @@ const mapKorokToImage = (korok: KorokType):string =>{
         case KorokType.Well: return "korok-magnesis";
         case KorokType.Other: return "korok";
 		default: return "korok";
+	}
+};
+
+const mapKorokToEstimate = (korok: KorokType):number =>{
+	switch(korok){
+        case KorokType.Acorn: return 5;
+        case KorokType.AcornFlying: return 5;
+        case KorokType.AcornLog: return 5;
+        case KorokType.AcornTree: return 5;
+        case KorokType.AcornHanging: return 5;
+        case KorokType.Balloon: return 10;
+        case KorokType.Basketball: return 8;
+        case KorokType.Beard: return 2;
+        case KorokType.BlockPuzzle: return 10;
+        case KorokType.BoulderCircle: return 10;
+        case KorokType.BoulderGolf: return 5;
+        case KorokType.Confetti: return 5;
+        case KorokType.FlowerChase: return 12;
+        case KorokType.FlowerCount: return 10;
+        case KorokType.IceBlock: return 10;
+        case KorokType.JumpFence: return 15;
+        case KorokType.LiftRock: return 2;
+        case KorokType.LiftRockDoor: return 3;
+        case KorokType.LiftRockTree: return 5;
+        case KorokType.LiftRockRubble: return 3;
+        case KorokType.LiftRockBoulder: return 3;
+        case KorokType.LiftRockLeaves: return 3;
+        case KorokType.LiftRockSlab: return 4;
+        case KorokType.LightChase: return 5;
+        case KorokType.LilyPads: return 5;
+        case KorokType.LuminousStone: return 5;
+        case KorokType.MatchTree: return 5;
+        case KorokType.MatchCactus: return 5;
+        case KorokType.MetalBoxCircle: return 10;
+        case KorokType.OfferApple: return 3;
+        case KorokType.OfferBanana: return 3;
+        case KorokType.OfferDurian: return 3;
+        case KorokType.OfferEgg: return 3;
+        case KorokType.OfferPalmFruit: return 3;
+        case KorokType.OfferPepper: return 3;
+        case KorokType.OfferShield: return 3;
+        case KorokType.Race: return 15;
+        case KorokType.RockCircle: return 10;
+        case KorokType.ShootEmblem: return 5;
+        case KorokType.SnowballGolf: return 10;
+        case KorokType.Torch: return 5;
+        case KorokType.TreeBranch: return 1;
+        case KorokType.TreeStump: return 8;
+        case KorokType.Well: return 8;
+        case KorokType.Other: return 5;
+		default: return 5;
 	}
 };
 

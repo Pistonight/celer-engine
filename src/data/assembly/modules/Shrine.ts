@@ -163,26 +163,26 @@ class ShrineModule implements CompilerPresetModule {
     }
 
     private addShrine(name: string, coord: [number, number, number]): void {
-        this.addShrineHelper(name, "shrine", coord);
+        this.addShrineHelper(name, "shrine", coord, 8);
     }
 
     private addBlessing(name: string, coord: [number, number, number]): void {
-        this.addShrineHelper(name, "shrine-blessing", coord);
+        this.addShrineHelper(name, "shrine-blessing", coord, 4);
     }
 
     private addSmallSword(name: string, coord: [number, number, number]): void {
-        this.addShrineHelper(name, "shrine-sword", coord);
+        this.addShrineHelper(name, "shrine-sword", coord, 20);
     }
 
     private addDoubleSword(name: string, coord: [number, number, number]): void {
-        this.addShrineHelper(name, "shrine-double-sword", coord);
+        this.addShrineHelper(name, "shrine-double-sword", coord, 20);
     }
 
     private addDLC(name: string, coord: [number, number, number]): void {
-        this.addShrineHelper(name, "shrine-dlc", coord);
+        this.addShrineHelper(name, "shrine-dlc", coord, 10);
     }
 
-    private addShrineHelper(name: string, icon: string, coord: [number, number, number] = [0,0,0]): void{
+    private addShrineHelper(name: string, icon: string, coord: [number, number, number], timeOverride: number): void{
         const shrineCompactName = "_Shrine::"+name.replaceAll("'", "").replaceAll(" ", "");
         this.map[shrineCompactName] = () => ({
             text: new TypedStringSingle({
@@ -196,7 +196,8 @@ class ShrineModule implements CompilerPresetModule {
                 isAway: false,
                 isWarp: false,
                 
-            }]
+            }],
+            timeOverride
         });
     }
 

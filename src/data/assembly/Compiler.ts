@@ -3,7 +3,7 @@ import { MapOf } from "data/util";
 import { Movement, SplitType } from ".";
 import { getModules,CompilerPresetModule } from "./modules";
 import { StringParser } from "./text";
-import { BannerType, RouteAssembly, RouteAssemblySection } from "./types";
+import { BannerType, RouteAssembly, RouteAssemblySection, RouteCommand } from "./types";
 
 export class Compiler {
     private modules: CompilerPresetModule[] = getModules();
@@ -172,6 +172,9 @@ export class Compiler {
         if(extend.fury){
             data.fury = extend.fury;
         }
+        if(extend["time-override"]){
+            data.timeOverride = extend["time-override"];
+        }
        
       
         if(extend["split-type"]){
@@ -181,6 +184,16 @@ export class Compiler {
             if(SplitType[SplitType[customSplitTypeString as keyof typeof SplitType]] === customSplitTypeString){
                 data.splitType = SplitType[customSplitTypeString as keyof typeof SplitType];
             }
+        }
+
+        if(extend.commands){
+            const validCommands: RouteCommand[] = [];
+            extend.commands.forEach(cString=>{
+                if(RouteCommand[RouteCommand[cString as keyof typeof RouteCommand]] === cString){
+                    validCommands.push(RouteCommand[cString as keyof typeof RouteCommand]);
+                }
+            })
+            data.commands = validCommands;
         }
 
         // Doing minimal error checking here, since the bundler is supposed to check the errors
