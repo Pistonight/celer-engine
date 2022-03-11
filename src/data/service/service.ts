@@ -2,7 +2,6 @@ import { RouteScript, TARGET_VERSION } from "data/compile";
 import queryString from "query-string";
 import axios from "axios";
 import { BannerType, TypedStringSingle, StringType } from "data/assembly";
-import { config } from "process";
 
 export interface ServiceConfig {
     scriptUrl?: string,
