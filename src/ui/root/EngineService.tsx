@@ -22,6 +22,7 @@ const EngineContext = React.createContext<EngineContextState>(EmptyObject());
 
 interface EngineServiceProps {
     mapCore: MapCore,
+    onRouteReload: ()=>void
 }
 
 interface EngineServiceState extends EngineContextState{
@@ -96,6 +97,7 @@ export class EngineService extends React.Component<EngineServiceProps, EngineSer
             const url = "http://localhost:"+config.devConfig.devPort;
             this.loadRouteScriptAsync(url);
             const handle = setInterval(()=>{
+                this.props.onRouteReload();
                 this.loadRouteScriptAsync(url)
             }, config.devConfig.refreshInterval);
             this.setState({

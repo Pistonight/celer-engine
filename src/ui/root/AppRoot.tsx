@@ -10,7 +10,8 @@ import { EngineService } from "./EngineService";
 /*
  * Root component for the app. Also acts as a provider for global states
  */
-interface AppRootProps {}
+interface AppRootProps {
+}
 
 interface AppRootState {
     mapDisplayMode: MapDisplayMode,
@@ -111,7 +112,10 @@ export class AppRoot extends React.Component<AppRootProps, AppRootState> {
             setDocCurrentLine: this.setDocCurrentLine.bind(this)
         }}>
             <StyleProvider mapDisplayMode={this.state.mapDisplayMode} appColors={appColors}>
-                <EngineService mapCore={this.state.mapCore}>
+                <EngineService mapCore={this.state.mapCore} onRouteReload={()=>{
+                    // Prevent doc from going back to previous scroll position on reload
+                    this.setState({docScrollToLine: this.state.docCurrentLine});
+                }}>
                     {this.props.children}
                 </EngineService>
             </StyleProvider>
