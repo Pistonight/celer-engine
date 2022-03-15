@@ -7,5 +7,5 @@ export const DocFrameStyle = ({sizes}: ComputeStyleInputs)=>(<const>{
         overflowX: "hidden",
         width: `calc( 100% - ${sizes.map} )`,
         height: `calc( 100vh - ${sizes.statusBar} )`
-    },
+    }
 });

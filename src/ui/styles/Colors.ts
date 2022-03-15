@@ -102,7 +102,7 @@ export const DefaultColors: AppColors = {
     stringLinkColorNotes: "inherit",
     stringVariableColorNotes: "#880000",
     stringImportantColorNotes: "#ff00ff",
-    stringGaleColorNotes: "#00ff00",
+    stringGaleColorNotes: "#008800",
     stringFuryColorNotes: "#ff8800",
 }
 

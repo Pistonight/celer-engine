@@ -16,6 +16,7 @@ class BossModule implements CompilerPresetModule {
         this.addBossType("_Boss::Hinox::Red", "Red Hinox", SplitType.Hinox, "hinox-red");
         this.addBossType("_Boss::Hinox::Blue", "Blue Hinox", SplitType.Hinox, "hinox-blue");
         this.addBossType("_Boss::Hinox::Black", "Black Hinox", SplitType.Hinox, "hinox-black");
+        this.addBossType("_Boss::Hinox::Stal", "Stalnox", SplitType.Hinox, "hinox-stal");
 
         this.addBossType("_Boss::Molduga", "Molduga", SplitType.Molduga, "molduga");
     }
