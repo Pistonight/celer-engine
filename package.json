@@ -1,7 +1,7 @@
 {
   "name": "celer-engine",
   "homepage": "https://itntpiston.github.io/celer/",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "private": true,
   "dependencies": {
     "@babel/core": "^7.16.0",

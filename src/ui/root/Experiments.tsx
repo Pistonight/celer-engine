@@ -46,8 +46,8 @@ export class Experiments extends React.Component<ExperimentProps, ExperimentStat
         const parsedQueryString = queryString.parse(window.location.search);
         const overrides: MapOf<boolean> = {};
         for(const key in parsedQueryString){
-            if (key.startsWith("Exp.") && parsedQueryString[key]){
-                overrides[key.substring(4)] = true;
+            if (key.startsWith("Exp.")){
+                overrides[key.substring(4)] = !!parsedQueryString[key];
             }
         }
         this.setState({overrides});
