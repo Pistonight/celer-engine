@@ -1,4 +1,6 @@
 {
     "EnhancedScrollTrackerEnabled": false,
-    "MapSyncToDocScrollEnabled": false
+    "MapSyncToDocScrollEnabled": false,
+    "ExportSplits": false,
+    "NoTrackDocPos": true
 }
